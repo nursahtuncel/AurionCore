@@ -1,0 +1,105 @@
+.references {
+  padding: 80px 0;
+  background: var(--section-bg);
+  position: relative;
+  border-top: 1px solid var(--grid-line);
+  border-bottom: 1px solid var(--grid-line);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 4rem;
+  padding: 0 2rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  color: var(--text-main);
+  margin-bottom: 1rem;
+}
+
+.subtitle {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+}
+
+.logoMarquee {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  white-space: nowrap;
+}
+
+.logoMarquee::before,
+.logoMarquee::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 150px;
+  height: 100%;
+  z-index: 2;
+}
+
+.logoMarquee::before {
+  left: 0;
+  background: linear-gradient(to right, var(--section-bg), transparent);
+}
+
+.logoMarquee::after {
+  right: 0;
+  background: linear-gradient(to left, var(--section-bg), transparent);
+}
+
+.marqueeContent {
+  display: inline-block;
+  animation: scroll 30s linear infinite;
+}
+
+.logoBox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 200px;
+  height: 100px;
+  margin: 0 1.5rem;
+  border-radius: 12px;
+  background: var(--badge-bg);
+  border: 1px solid transparent;
+  transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+  cursor: pointer;
+}
+
+.logoBox:hover {
+  transform: translateY(-5px);
+  background: var(--orb-gold);
+  border-color: var(--card-hover-border);
+}
+
+.logoText {
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+  transition: color 0.3s ease;
+}
+
+.logoBox:hover .logoText {
+  color: var(--text-main);
+}
+
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@media (max-width: 768px) {
+  .logoMarquee::before,
+  .logoMarquee::after { width: 60px; }
+  .logoBox { width: 150px; height: 80px; margin: 0 1rem; }
+}

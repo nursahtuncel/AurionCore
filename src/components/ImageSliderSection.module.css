@@ -1,0 +1,46 @@
+.bannerSection {
+  padding: 0;
+  margin-top: 76px; /* Navbar height */
+  background-color: var(--background);
+  width: 100%;
+}
+
+.container {
+  max-width: 100%;
+  margin: 0;
+  padding: 20px; /* Add padding so shadows are fully visible */
+  width: 100%;
+}
+
+.gridWrapper {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  width: 100%;
+}
+
+.bannerLink {
+  display: block;
+  text-decoration: none;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.bannerLink:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.bannerItem {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+@media (max-width: 768px) {
+  .gridWrapper {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,163 @@
+.contact {
+  padding: 100px 2rem;
+  background: var(--section-bg);
+  border-top: 1px solid var(--grid-line);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  color: var(--text-main);
+  margin-bottom: 1rem;
+}
+
+.subtitle {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+}
+
+.infoCard, .formCard {
+  padding: 3rem;
+  border-radius: 16px;
+  background: var(--card-bg);
+}
+
+.infoCard {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.infoItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
+.icon {
+  background: var(--orb-gold);
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+  color: var(--color-gold-dark);
+}
+
+.icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+[data-theme='dark'] .icon {
+  color: var(--color-gold-light);
+}
+
+.infoItem h3 {
+  color: var(--text-main);
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.infoItem p {
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.formGroup label {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.formGroup input,
+.formGroup textarea {
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  padding: 1rem;
+  border-radius: 8px;
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.formGroup input:focus,
+.formGroup textarea:focus {
+  outline: none;
+  border-color: var(--color-gold-dark);
+  background: var(--background);
+}
+
+[data-theme='dark'] .formGroup input:focus,
+[data-theme='dark'] .formGroup textarea:focus {
+  border-color: var(--color-gold-light);
+}
+
+.submitBtn {
+  background: var(--gradient-gold);
+  color: #ffffff;
+  padding: 1rem 2.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  border: none;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: all 0.3s ease;
+}
+
+.submitBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(232, 196, 104, 0.3);
+}
+
+@media (max-width: 992px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .contact {
+    padding: 60px 1.5rem;
+  }
+  .infoCard, .formCard {
+    padding: 1.5rem;
+  }
+  .title {
+    font-size: 2rem;
+  }
+  .header {
+    margin-bottom: 2.5rem;
+  }
+}
