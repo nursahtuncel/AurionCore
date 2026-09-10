@@ -38,7 +38,7 @@ export default function Header() {
   };
 
   return (
-    <header className={`${styles.header} ${scrolled ? styles.scrolled : ''}`}>
+    <header className={`${styles.header} ${styles.scrolled}`}>
       <div className={styles.container}>
         <Link href="/" className={styles.logoLink} onClick={() => setIsMobileMenuOpen(false)}>
           <Logo className={styles.logo} />

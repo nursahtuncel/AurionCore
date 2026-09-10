@@ -1,7 +1,34 @@
-import React from 'react';
+"use client";
+
+import React, { useState } from 'react';
 import styles from './ContactSection.module.css';
 
 export default function ContactSection() {
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setStatus('loading');
+    const formData = new FormData(e.currentTarget);
+    
+    // FormSubmit.co spam korumasını devre dışı bırakmak için gizli alanlar da eklenebilir,
+    // ancak standart AJAX POST isteği direkt çalışacaktır.
+    try {
+      const res = await fetch("https://formsubmit.co/ajax/aurioncore.info@gmail.com", {
+        method: "POST",
+        body: formData,
+      });
+      if (res.ok) {
+        setStatus('success');
+        (e.target as HTMLFormElement).reset(); // Formu temizle
+      } else {
+        setStatus('error');
+      }
+    } catch (error) {
+      setStatus('error');
+    }
+  };
+
   return (
     <section id="iletisim" className={styles.contact}>
       <div className={styles.container}>
@@ -23,7 +50,7 @@ export default function ContactSection() {
               </div>
               <div>
                 <h3>Adres</h3>
-                <p>Mecidiyeköy<br />İstanbul</p>
+                <p>Merkez Mahallesi ,Kağıthane Caddesi,Çağlayan <br />İstanbul</p>
               </div>
             </div>
 
@@ -37,7 +64,7 @@ export default function ContactSection() {
               </div>
               <div>
                 <h3>E-Posta</h3>
-                <p>nursahtuncell@gmail.com</p>
+                <p>aurioncore.info@gmail.com</p>
               </div>
             </div>
 
@@ -56,25 +83,40 @@ export default function ContactSection() {
           </div>
 
           <div className={`${styles.formCard} glass-panel`}>
-            <form className={styles.form}>
+            <form className={styles.form} onSubmit={handleSubmit}>
+              {/* FormSubmit.co options */}
+              <input type="hidden" name="_subject" value="AurionCore Web Sitesinden Yeni Mesaj!" />
+              <input type="hidden" name="_template" value="table" />
+              
               <div className={styles.formGroup}>
                 <label htmlFor="name">Adınız Soyadınız</label>
-                <input type="text" id="name" placeholder="Adınız.." />
+                <input type="text" name="name" id="name" placeholder="Adınız.." required />
               </div>
 
               <div className={styles.formGroup}>
                 <label htmlFor="email">E-Posta Adresiniz</label>
-                <input type="email" id="email" placeholder="örnek@gmail.com" />
+                <input type="email" name="email" id="email" placeholder="örnek@gmail.com" required />
               </div>
 
               <div className={styles.formGroup}>
                 <label htmlFor="message">Mesajınız</label>
-                <textarea id="message" rows={4} placeholder=" Projenizden bahsedin..."></textarea>
+                <textarea name="message" id="message" rows={4} placeholder=" Projenizden bahsedin..." required></textarea>
               </div>
 
-              <button type="button" className={styles.submitBtn}>
-                Gönder
+              <button type="submit" className={styles.submitBtn} disabled={status === 'loading'}>
+                {status === 'loading' ? 'Gönderiliyor...' : 'Gönder'}
               </button>
+
+              {status === 'success' && (
+                <p style={{ color: '#10b981', marginTop: '1rem', fontSize: '0.9rem', textAlign: 'center' }}>
+                  Mesajınız başarıyla gönderildi! Size en kısa sürede dönüş yapacağız.
+                </p>
+              )}
+              {status === 'error' && (
+                <p style={{ color: '#ef4444', marginTop: '1rem', fontSize: '0.9rem', textAlign: 'center' }}>
+                  Bir hata oluştu. Lütfen daha sonra tekrar deneyin veya direkt e-posta gönderin.
+                </p>
+              )}
             </form>
           </div>
         </div>
