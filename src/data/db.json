@@ -1,0 +1,90 @@
+{
+  "settings": {
+    "brideName": "Minel Şevval",
+    "brideFullName": "Minel Şevval Gözükara",
+    "groomName": "Muhammed Şamil",
+    "groomFullName": "Muhammed Şamil Kuş",
+    "arabicVerse": "بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ\nوَأَلَّفَ بَيْنَ قُلُوبِهِمْ",
+    "arabicVerseTranslation": "\"Allah onların kalplerini birbirine ısındırdı.\"",
+    "arabicVerseSource": "Enfâl, 8/63",
+    "invitationBody": "Kalpleri birleştirenin Allah olduğuna inanarak, bir ömür aynı yolda yürümeye, aynı duaya \"Âmin\" demeye niyet ettik. Bu niyetimizi bir yuva ile taçlandıracağımız bu güzel günümüzde mutluluğumuzu paylaşmanız ve dualarınızla bizlere eşlik etmeniz dileğiyle…",
+    "invitationSignature": "Minel & Muhammed",
+    "events": [
+      {
+        "id": "kina",
+        "type": "kina",
+        "title": "Kına Merasimi",
+        "date": "28 Ekim 2026 Çarşamba",
+        "dateISO": "2026-10-28",
+        "startTime": "13:30",
+        "venueName": "Hüdaverdi Mescidi",
+        "venueSubtitle": "Bodrum Mescid — Yeşil Kapı",
+        "address": "Soğanlı Mah., Hüdaverdi Sok., Fettahoğlu Apt. No:28",
+        "district": "Bahçelievler / İstanbul",
+        "googleMapsUrl": "https://maps.google.com/?q=41.009342,28.853327"
+      },
+      {
+        "id": "dugun",
+        "type": "dugun",
+        "title": "Düğün Töreni",
+        "date": "31 Ekim 2026 Cumartesi",
+        "dateISO": "2026-10-31",
+        "startTime": "13:00",
+        "endTime": "17:00",
+        "convoyTime": "11:30",
+        "venueName": "Besa Albatros Davet & Balo Merkezi",
+        "address": "Çavuşoğlu, Yakacık Cd. No:131/1",
+        "district": "Kartal / İstanbul",
+        "googleMapsUrl": "https://maps.app.goo.gl/cCL8LALS6rrJLCHH6?g_st=ic"
+      }
+    ],
+    "music": {
+      "enabled": true,
+      "source": "preset",
+      "presetId": "masallah",
+      "customUrl": "",
+      "title": "Mustafa Ceceli — Maşallah",
+      "volume": 0.65,
+      "loop": true
+    },
+    "lcvDeadline": "25 Ekim 2026",
+    "lcvDeadlineISO": "2026-10-25",
+    "ibanInfo": {
+      "bankName": "",
+      "accountHolder": "",
+      "iban": ""
+    },
+    "sections": {
+      "countdown": true,
+      "gallery": true,
+      "program": true,
+      "venue": true,
+      "iban": true,
+      "rsvp": true,
+      "guestbook": true
+    },
+    "coverPhoto": "",
+    "gallery": []
+  },
+  "rsvp": [
+    {
+      "name": "Nurşah Tunçel",
+      "phone": "05322714637",
+      "attending": "yes",
+      "ceremony": "ikisi",
+      "count": "1",
+      "children": "0",
+      "note": "",
+      "id": "rsvp_1790982050531_zauic",
+      "createdAt": "2026-10-02T23:00:50.531Z"
+    }
+  ],
+  "guestbook": [
+    {
+      "name": "Nurşah Tunçel",
+      "message": "Tebrik ederim güzel kardeşim",
+      "id": "gb_1790982065434_ed9zr",
+      "createdAt": "2026-10-02T23:01:05.434Z"
+    }
+  ]
+}
