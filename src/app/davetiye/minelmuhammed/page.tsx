@@ -120,7 +120,7 @@ function useCountdown(targetISO: string) {
 // ScrollReveal hook
 // ─────────────────────────────────────────────────────────
 
-function useReveal() {
+function useReveal(deps: any[] = []) {
   useEffect(() => {
     const els = document.querySelectorAll(".d-reveal");
     const io = new IntersectionObserver(
@@ -135,7 +135,8 @@ function useReveal() {
     );
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, deps);
 }
 
 // ─────────────────────────────────────────────────────────
@@ -697,7 +698,10 @@ function LcvSection({ guestName, guestHash, data }: { guestName?: string; guestH
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.kvkk) return;
+    if (!form.kvkk) {
+      alert("Lütfen aydınlatma metnini onaylayınız.");
+      return;
+    }
     setSubmitting(true);
     try {
       await fetch("/davetiye/minelmuhammed/api/rsvp", {
@@ -1204,7 +1208,7 @@ export default function DavetiyeMinelMuhammedPage() {
   }, []);
 
   // ScrollReveal
-  useReveal();
+  useReveal([dataLoaded, coverVisible]);
 
   // Müzik URL'sini belirle
   const musicUrl = data?.music?.enabled
@@ -1365,20 +1369,33 @@ export default function DavetiyeMinelMuhammedPage() {
             </span>
           </div>
 
-          {/* Guest greeting */}
-          {guestGreeting ? (
+          {/* Guest greeting & Name */}
+          {guestGreeting && sec.greeting !== false ? (
             <p
               className="d-sans d-reveal"
-              style={{ fontSize: "1rem", color: "var(--d-gold)", marginBottom: "1rem", fontWeight: 500, padding: "0 1rem" }}
+              style={{
+                fontSize: "1rem",
+                color: "#C9A84C", // Lüks altın rengi
+                marginBottom: "1rem",
+                fontWeight: 600,
+                padding: "0 1rem"
+              }}
             >
               {guestGreeting}
             </p>
-          ) : guestName ? (
+          ) : null}
+
+          {guestName && sec.greeting !== false ? (
             <p
               className="d-sans d-reveal"
-              style={{ fontSize: "0.9rem", color: "var(--d-espresso)", marginBottom: "0.75rem", letterSpacing: "0.05em" }}
+              style={{
+                fontSize: "0.85rem",
+                color: "#5A3E2B", // Yumuşak kahverengi
+                marginBottom: "0.75rem",
+                letterSpacing: "0.05em",
+              }}
             >
-              Sayın Misafirimiz: <strong style={{fontWeight: 600}}>{guestName}</strong>
+              Sayın Misafirimiz: <strong>{guestName}</strong>
             </p>
           ) : null}
 
