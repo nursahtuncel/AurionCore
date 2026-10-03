@@ -254,12 +254,12 @@ export async function addRsvp(entry: Omit<RsvpEntry, "id" | "createdAt">): Promi
 /** Tüm RSVP yanıtlarını getir */
 export async function getRsvpList(): Promise<RsvpEntry[]> {
   const rsvpRef = collection(firestore, "rsvp");
-  const q = query(rsvpRef, orderBy("createdAt", "desc"));
-  const querySnapshot = await getDocs(q);
+  const querySnapshot = await getDocs(rsvpRef);
   const result: RsvpEntry[] = [];
   querySnapshot.forEach((doc) => {
     result.push({ id: doc.id, ...doc.data() } as RsvpEntry);
   });
+  result.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   return result;
 }
 
@@ -280,12 +280,12 @@ export async function addGuestbookEntry(entry: { name: string; message: string }
 /** Tüm misafir defteri mesajlarını getir */
 export async function getGuestbook(): Promise<GuestbookEntry[]> {
   const gbRef = collection(firestore, "guestbook");
-  const q = query(gbRef, orderBy("createdAt", "desc"));
-  const querySnapshot = await getDocs(q);
+  const querySnapshot = await getDocs(gbRef);
   const result: GuestbookEntry[] = [];
   querySnapshot.forEach((doc) => {
     result.push({ id: doc.id, ...doc.data() } as GuestbookEntry);
   });
+  result.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   return result;
 }
 
@@ -338,12 +338,12 @@ export async function updateWhatsAppSettings(newSettings: Partial<WhatsAppSettin
 /** WhatsApp Misafirleri */
 export async function getWhatsAppGuests(): Promise<WhatsAppGuest[]> {
   const ref = collection(firestore, "whatsapp_guests");
-  const q = query(ref, orderBy("createdAt", "desc"));
-  const querySnapshot = await getDocs(q);
+  const querySnapshot = await getDocs(ref);
   const result: WhatsAppGuest[] = [];
   querySnapshot.forEach((docSnap) => {
     result.push({ id: docSnap.id, ...docSnap.data() } as WhatsAppGuest);
   });
+  result.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   return result;
 }
 

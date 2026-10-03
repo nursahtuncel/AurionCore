@@ -22,6 +22,7 @@ import {
   Sparkles,
   Car,
 } from "lucide-react";
+import confetti from "canvas-confetti";
 
 // ─────────────────────────────────────────────────────────
 // Helpers
@@ -141,15 +142,29 @@ function useReveal() {
 // Cover / Envelope Screen
 // ─────────────────────────────────────────────────────────
 
-function CoverScreen({ onOpen, data }: { onOpen: () => void; data: any }) {
-  const [opening, setOpening] = useState(false);
+function CoverScreen({ onPlayStart, onClose, data }: { onPlayStart: () => void; onClose: () => void; data: any }) {
+  const [isOpen, setIsOpen] = useState(false);
   const [fading, setFading] = useState(false);
 
   const handleClick = () => {
-    if (opening) return;
-    setOpening(true);
-    onOpen();
-    setTimeout(() => setFading(true), 1400);
+    if (isOpen) return;
+    setIsOpen(true);
+    onPlayStart(); // Müzik eşzamanlı başlar
+    
+    // Zarf açılma animasyonları sekansı
+    setTimeout(() => {
+      confetti({
+        particleCount: 150,
+        spread: 100,
+        origin: { y: 0.3 },
+        colors: ["#D4AF37", "#C9A84C", "#FFFFFF", "#8A6D2C"],
+        zIndex: 2147483647
+      });
+      setFading(true);
+      setTimeout(() => {
+        onClose();
+      }, 1200);
+    }, 2000);
   };
 
   return (
@@ -157,280 +172,152 @@ function CoverScreen({ onOpen, data }: { onOpen: () => void; data: any }) {
       style={{
         position: "fixed",
         inset: 0,
-        zIndex: 9000,
-        minHeight: "100dvh",
+        zIndex: 99999,
+        width: "100vw",
+        height: "100dvh",
+        backgroundColor: "var(--d-cream)",
+        backgroundImage: "url('/davetiye/minelmuhammed/couple.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
         display: "flex",
-        flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        textAlign: "center",
-        backgroundColor: "#2A1F1A",
-        padding: "1.5rem 1rem",
-        overflow: "hidden",
-        transition: fading ? "opacity 1s ease, visibility 1s ease" : undefined,
+        transition: fading ? "opacity 1.2s ease, visibility 1.2s ease" : undefined,
         opacity: fading ? 0 : 1,
         visibility: fading ? "hidden" : "visible",
         pointerEvents: fading ? "none" : "auto",
+        perspective: "1000px"
       }}
     >
-      {/* Ambient glow */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "radial-gradient(ellipse 70% 55% at 50% 48%, rgba(201,162,75,0.13) 0%, transparent 72%)",
-          pointerEvents: "none",
-        }}
-      />
+      <div style={{
+        position: "absolute",
+        inset: 0,
+        background: "rgba(240, 235, 225, 0.7)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+      }} />
 
-      {/* Gold dust particles — fixed positions, slow pulse */}
-      {[
-        { x: 10, y: 18, dur: 4.2, delay: 0 },
-        { x: 84, y: 13, dur: 5.5, delay: 1.1 },
-        { x: 20, y: 72, dur: 3.8, delay: 0.6 },
-        { x: 78, y: 78, dur: 6.0, delay: 2.0 },
-        { x: 52, y: 88, dur: 4.5, delay: 1.5 },
-      ].map((p, i) => (
-        <div
-          key={i}
-          aria-hidden="true"
-          style={{
-            position: "absolute",
-            left: `${p.x}%`,
-            top: `${p.y}%`,
-            width: "5px",
-            height: "5px",
-            borderRadius: "50%",
-            background: "rgba(201,162,75,0.5)",
-            boxShadow: "0 0 7px 2px rgba(201,162,75,0.28)",
-            animation: `d-dust-pulse ${p.dur}s ease-in-out ${p.delay}s infinite`,
-            pointerEvents: "none",
-            zIndex: 0,
-          }}
-        />
-      ))}
-
-      {/* ── Content (above particles) ── */}
-      <div
+      {/* Zarf Konteyneri */}
+      <div 
         style={{
           position: "relative",
-          zIndex: 1,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          width: "100%",
+          width: "90vw",
           maxWidth: "400px",
+          aspectRatio: "1.4",
+          cursor: isOpen ? "default" : "pointer",
+          zIndex: 2,
+          transform: isOpen ? "scale(1.05) translateY(30px)" : "scale(1)",
+          transition: "transform 1.8s cubic-bezier(0.2, 0.8, 0.2, 1)",
         }}
+        onClick={handleClick}
       >
-        {/* Label */}
-        <p
-          className="d-sans"
-          style={{
-            fontSize: "0.65rem",
-            letterSpacing: "0.28em",
-            textTransform: "uppercase",
-            color: "rgba(201,162,75,0.75)",
-            marginBottom: "1.5rem",
-          }}
-        >
-          ✦ Özel Davetiyeniz ✦
-        </p>
+         {/* Zarfın Arka Yüzü (İç kısmı) */}
+         <div style={{
+           position: "absolute", inset: 0,
+           backgroundColor: "#D9CDB8",
+           borderRadius: "6px",
+           boxShadow: "0 15px 35px rgba(0,0,0,0.2)",
+         }} />
 
-        {/* ── Envelope ── */}
-        <div
-          onClick={handleClick}
-          role="button"
-          aria-label="Davetiyeyi aç"
-          style={{
-            position: "relative",
-            width: "min(85vw, 340px)",
-            aspectRatio: "4 / 3",
-            cursor: "pointer",
-            marginBottom: "1.75rem",
-            filter: "drop-shadow(0 16px 32px rgba(0,0,0,0.5))",
-            flexShrink: 0,
-          }}
-        >
-          {/* Envelope body */}
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              borderRadius: "12px",
-              background: "linear-gradient(160deg, #F5EDE0 0%, #E6D5BE 100%)",
-              border: "1px solid rgba(201,162,75,0.38)",
-            }}
-          />
+         {/* İçindeki Kart */}
+         <div style={{
+           position: "absolute",
+           inset: "10px",
+           backgroundColor: "#FAF7F2",
+           borderRadius: "4px",
+           display: "flex",
+           flexDirection: "column",
+           alignItems: "center",
+           justifyContent: "center", /* YAZIYI ORTALAR */
+           transform: isOpen ? "translateY(-120px)" : "translateY(0)",
+           transition: "transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) 0.6s",
+           boxShadow: "0 -2px 10px rgba(0,0,0,0.1)",
+           zIndex: isOpen ? 3 : 1
+         }}>
+            <p className="d-script" style={{ color: "var(--d-gold-dark)", fontSize: "3rem", lineHeight: 1 }}>
+              Davetiye
+            </p>
+            <p className="d-sans" style={{ color: "var(--d-espresso)", fontSize: "0.85rem", letterSpacing: "0.15em", marginTop: "0.5rem", textTransform: "uppercase" }}>
+              Minel & Muhammed
+            </p>
+         </div>
 
-          {/* Flaps container */}
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              overflow: "hidden",
-              borderRadius: "12px",
-              pointerEvents: "none",
-            }}
-          >
-            {/* Left */}
-            <div style={{ position: "absolute", top: 0, bottom: 0, left: 0, width: "50%", background: "#EDE0CC", clipPath: "polygon(0 0, 100% 50%, 0 100%)" }} />
-            {/* Right */}
-            <div style={{ position: "absolute", top: 0, bottom: 0, right: 0, width: "50%", background: "#E4D5BC", clipPath: "polygon(100% 0, 0 50%, 100% 100%)" }} />
-            {/* Bottom */}
-            <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "50%", background: "#DDD0B8", clipPath: "polygon(0 100%, 50% 0, 100% 100%)", borderTop: "1px solid rgba(201,162,75,0.18)" }} />
-          </div>
+         {/* Sol Kanat */}
+         <div style={{
+           position: "absolute", inset: 0, zIndex: 2,
+           clipPath: "polygon(0 0, 50% 50%, 0 100%)",
+           backgroundColor: "#E6DBCA",
+           borderRadius: "6px 0 0 6px",
+         }} />
+         
+         {/* Sağ Kanat */}
+         <div style={{
+           position: "absolute", inset: 0, zIndex: 2,
+           clipPath: "polygon(100% 0, 50% 50%, 100% 100%)",
+           backgroundColor: "#E6DBCA",
+           borderRadius: "0 6px 6px 0",
+         }} />
 
-          {/* Top flap — opens on click */}
-          <div
-            style={{
-              position: "absolute",
-              top: 0, left: 0, right: 0,
-              height: "50%",
-              background: "#F0E4CE",
-              clipPath: "polygon(0 0, 50% 100%, 100% 0)",
-              transformOrigin: "top center",
-              transform: opening ? "rotateX(165deg)" : "rotateX(0deg)",
-              transition: opening ? "transform 0.75s ease-in-out" : "none",
-              transformStyle: "preserve-3d",
-              zIndex: 5,
-              pointerEvents: "none",
-              borderBottom: "1px solid rgba(201,162,75,0.22)",
-            }}
-          />
+         {/* Alt Kanat */}
+         <div style={{
+           position: "absolute", inset: 0, zIndex: 2,
+           clipPath: "polygon(0 100%, 50% 48%, 100% 100%)",
+           backgroundColor: "#EFE6D5",
+           borderRadius: "0 0 6px 6px",
+         }} />
 
-          {/* Bordo wax seal — sits at the flap junction */}
-          <div
-            style={{
-              position: "absolute",
-              top: "42%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              zIndex: 10,
-              width: "clamp(44px, 13vw, 62px)",
-              height: "clamp(44px, 13vw, 62px)",
-              borderRadius: "50%",
-              background:
-                "radial-gradient(circle at 38% 32%, #A33040 0%, #6B1520 55%, #3D0B10 100%)",
-              border: "1.5px solid rgba(201,162,75,0.7)",
-              boxShadow:
-                "inset 2px 2px 4px rgba(255,255,255,0.18), inset -2px -2px 5px rgba(0,0,0,0.4), 0 4px 14px rgba(107,21,32,0.45)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              transition: opening ? "opacity 0.25s ease" : "none",
-              opacity: opening ? 0 : 1,
-              fontFamily: "var(--d-font-script)",
-              fontSize: "clamp(0.7rem, 2.2vw, 0.95rem)",
-              color: "#F5EDE0",
-            }}
-          >
-            M&amp;M
-          </div>
-        </div>
+         {/* Üst Kanat (Kapak) */}
+         <div style={{
+           position: "absolute", inset: 0, zIndex: isOpen ? 0 : 4,
+           clipPath: "polygon(0 0, 50% 52%, 100% 0)",
+           backgroundColor: "#F7F0E6",
+           borderRadius: "6px 6px 0 0",
+           transformOrigin: "top",
+           transform: isOpen ? "rotateX(180deg)" : "rotateX(0deg)",
+           transition: "transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), z-index 0s 0.4s",
+         }} />
 
-        {/* ── Names below envelope — multi-line, no ellipsis ── */}
-        <h1
-          className="d-script"
-          style={{
-            fontSize: "clamp(2.4rem, 10vw, 4.2rem)",
-            color: "#F0E4CE",
-            lineHeight: 1.1,
-            whiteSpace: "normal",
-            overflow: "visible",
-            textOverflow: "clip",
-            wordBreak: "break-word",
-            textShadow: "0 1px 2px rgba(0,0,0,0.25)",
-            margin: 0,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 0,
-            width: "100%",
-          }}
-        >
-          <span>{data.brideName.split(" ")[0]}</span>
-          <span
-            className="d-serif"
-            style={{
-              fontSize: "clamp(1rem, 3.5vw, 1.3rem)",
-              color: "rgba(201,162,75,0.7)",
-              fontStyle: "italic",
-              lineHeight: 1.5,
-            }}
-          >
-            &amp;
-          </span>
-          <span>{data.groomName.split(" ")[0]}</span>
-        </h1>
-
-        {/* Date line */}
-        <p
-          className="d-sans"
-          style={{
-            marginTop: "0.85rem",
-            fontSize: "clamp(0.64rem, 2.2vw, 0.78rem)",
-            letterSpacing: "0.09em",
-            color: "rgba(201,162,75,0.8)",
-            marginBottom: "1.75rem",
-          }}
-        >
-          28 Ekim&nbsp;•&nbsp;Kına&nbsp;&nbsp;|&nbsp;&nbsp;31 Ekim 2026&nbsp;•&nbsp;Düğün
-        </p>
-
-        {/* ── Open button — single heart icon ── */}
-        <button
-          onClick={handleClick}
-          disabled={opening}
-          aria-label="Davetiyeyi aç"
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "0.5rem",
-            padding: "0.875rem 2.25rem",
-            borderRadius: "9999px",
-            border: "none",
-            background:
-              "linear-gradient(135deg, #E8C97A 0%, #C9A24B 50%, #A67C1F 100%)",
-            color: "#2A1F1A",
-            fontFamily: "var(--d-font-sans)",
-            fontWeight: 700,
-            fontSize: "clamp(0.875rem, 3vw, 1rem)",
-            letterSpacing: "0.06em",
-            cursor: opening ? "default" : "pointer",
-            minHeight: "52px",
-            minWidth: "190px",
-            boxShadow: "0 8px 24px rgba(201,162,75,0.35)",
-            opacity: opening ? 0.65 : 1,
-            transition: "opacity 0.2s ease, transform 0.2s ease",
-            touchAction: "manipulation",
-          }}
-        >
-          <Heart size={16} fill="#2A1F1A" style={{ flexShrink: 0 }} />
-          <span>{opening ? "Açılıyor…" : "Davetiyeyi Aç"}</span>
-        </button>
-
-        {/* Micro note */}
-        <p
-          className="d-sans"
-          style={{
-            marginTop: "0.75rem",
-            fontSize: "0.68rem",
-            letterSpacing: "0.06em",
-            color: "rgba(201,162,75,0.48)",
-          }}
-        >
-          Müzik eşliğinde açılır
-        </p>
+         {/* Mühür */}
+         <div style={{
+           position: "absolute",
+           top: "52%", left: "50%",
+           transform: `translate(-50%, -50%) scale(${isOpen ? 0 : 1})`,
+           opacity: isOpen ? 0 : 1,
+           transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+           zIndex: 5,
+           width: "clamp(60px, 15vw, 80px)",
+           aspectRatio: "1",
+           borderRadius: "50%",
+           background: "radial-gradient(circle at 35% 35%, #E6C27A 0%, #C9A84C 40%, #8A6D2C 80%, #5E4613 100%)",
+           boxShadow: "0 6px 16px rgba(0,0,0,0.3), inset 0 3px 8px rgba(255,255,255,0.6), inset 0 -3px 8px rgba(0,0,0,0.5)",
+           display: "flex", alignItems: "center", justifyContent: "center",
+         }}>
+           <div style={{
+             width: "75%", height: "75%", borderRadius: "50%",
+             border: "1.5px solid rgba(138, 109, 44, 0.5)",
+             boxShadow: "inset 0 2px 4px rgba(0,0,0,0.3), 0 1px 2px rgba(255,255,255,0.4)",
+             display: "flex", alignItems: "center", justifyContent: "center",
+           }}>
+             <span className="d-script" style={{
+               color: "#5E4613", fontSize: "clamp(1.5rem, 4vw, 2.5rem)",
+               textShadow: "1px 1px 1px rgba(255,255,255,0.4), -1px -1px 1px rgba(0,0,0,0.3)",
+               lineHeight: 1, transform: "translateY(-2px)"
+             }}>M</span>
+           </div>
+         </div>
       </div>
+      
+      {!isOpen && (
+        <p className="d-sans" style={{ 
+          position: "absolute", bottom: "15%", zIndex: 2,
+          color: "var(--d-espresso)", fontSize: "0.85rem", letterSpacing: "0.15em", textTransform: "uppercase", fontWeight: 500 
+        }}>
+          Açmak için dokunun
+        </p>
+      )}
     </div>
   );
 }
-
-// ─────────────────────────────────────────────────────────
-// Floating Music Player
-// ─────────────────────────────────────────────────────────
 
 function MusicPlayer({
   audioRef,
@@ -443,142 +330,33 @@ function MusicPlayer({
   onToggle: () => void;
   hasError: boolean;
 }) {
-  const [muted, setMuted] = useState(false);
-
   if (hasError) return null;
 
-  const toggleMute = () => {
-    if (!audioRef.current) return;
-    audioRef.current.muted = !muted;
-    setMuted(!muted);
-  };
-
   return (
-    <div
+    <button
+      onClick={onToggle}
+      aria-label={isPlaying ? "Müziği durdur" : "Müziği çal"}
       style={{
         position: "fixed",
-        bottom: "1.25rem",
-        right: "1rem",
+        bottom: "1.5rem",
+        right: "1.5rem",
         zIndex: 8000,
+        width: "44px",
+        height: "44px",
+        borderRadius: "50%",
+        background: "var(--d-espresso)",
+        border: "1px solid var(--d-gold)",
+        cursor: "pointer",
         display: "flex",
         alignItems: "center",
-        gap: "0.5rem",
+        justifyContent: "center",
+        color: "var(--d-gold)",
+        boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+        transition: "transform 0.2s ease",
       }}
     >
-      {/* Track name bubble */}
-      {isPlaying && (
-        <div
-          className="d-sans"
-          style={{
-            background: "rgba(44,36,32,0.88)",
-            color: "#FAF7F2",
-            fontSize: "0.7rem",
-            padding: "0.35rem 0.75rem",
-            borderRadius: "9999px",
-            border: "1px solid rgba(201,168,76,0.3)",
-            maxWidth: "160px",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-          }}
-        >
-          ♫
-        </div>
-      )}
-
-      {/* Controls pill */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "0.25rem",
-          background: "rgba(44,36,32,0.9)",
-          border: "1px solid rgba(201,168,76,0.4)",
-          borderRadius: "9999px",
-          padding: "0.35rem 0.6rem",
-          backdropFilter: "blur(10px)",
-        }}
-      >
-        {/* Equalizer bars */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "flex-end",
-            gap: "2px",
-            height: "18px",
-            padding: "0 6px",
-          }}
-        >
-          {[...Array(4)].map((_, i) =>
-            isPlaying ? (
-              <span
-                key={i}
-                className="d-eq-bar"
-                style={{
-                  display: "block",
-                  width: "3px",
-                  background: "#C9A84C",
-                  borderRadius: "2px",
-                  minHeight: "4px",
-                }}
-              />
-            ) : (
-              <span
-                key={i}
-                style={{
-                  display: "block",
-                  width: "3px",
-                  height: "4px",
-                  background: "rgba(201,168,76,0.4)",
-                  borderRadius: "2px",
-                }}
-              />
-            )
-          )}
-        </div>
-
-        {/* Play/Pause */}
-        <button
-          onClick={onToggle}
-          aria-label={isPlaying ? "Müziği durdur" : "Müziği çal"}
-          style={{
-            width: "36px",
-            height: "36px",
-            borderRadius: "50%",
-            background: "linear-gradient(135deg, #E8C97A, #C9A84C)",
-            border: "none",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "#2C2420",
-            transition: "transform 0.15s ease",
-          }}
-        >
-          {isPlaying ? <Pause size={15} /> : <Play size={15} />}
-        </button>
-
-        {/* Mute */}
-        <button
-          onClick={toggleMute}
-          aria-label={muted ? "Sesi aç" : "Sesi kapat"}
-          style={{
-            width: "28px",
-            height: "28px",
-            borderRadius: "50%",
-            background: "transparent",
-            border: "none",
-            cursor: "pointer",
-            color: muted ? "#ef4444" : "rgba(255,255,255,0.7)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          {muted ? <VolumeX size={14} /> : <Volume2 size={14} />}
-        </button>
-      </div>
-    </div>
+      {isPlaying ? <Pause size={18} /> : <Play size={18} style={{ transform: "translateX(1px)" }} />}
+    </button>
   );
 }
 
@@ -588,19 +366,23 @@ function MusicPlayer({
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p
-      className="d-sans"
-      style={{
-        fontSize: "0.7rem",
-        letterSpacing: "0.25em",
-        textTransform: "uppercase",
-        color: "#C9A84C",
-        marginBottom: "0.5rem",
-        fontWeight: 600,
-      }}
-    >
-      {children}
-    </p>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.75rem", marginBottom: "0.5rem" }}>
+      <div style={{ height: "1px", width: "30px", background: "var(--d-gold)" }} />
+      <p
+        className="d-sans"
+        style={{
+          fontSize: "0.7rem",
+          letterSpacing: "0.2em",
+          textTransform: "uppercase",
+          color: "var(--d-gold-dark)",
+          fontWeight: 600,
+          margin: 0
+        }}
+      >
+        {children}
+      </p>
+      <div style={{ height: "1px", width: "30px", background: "var(--d-gold)" }} />
+    </div>
   );
 }
 
@@ -623,11 +405,12 @@ function CountdownSection({ data }: { data: any }) {
     <section className="d-section d-reveal" style={{ textAlign: "center" }}>
       <SectionLabel>Düğünümüze Kalan Süre</SectionLabel>
       <h2
-        className="d-script"
+        className="d-serif"
         style={{
-          fontSize: "clamp(1.8rem, 7vw, 3rem)",
-          color: "#2C2420",
+          fontSize: "clamp(1.6rem, 5vw, 2.2rem)",
+          color: "var(--d-espresso)",
           marginBottom: "2rem",
+          fontWeight: 500,
         }}
       >
         Büyük Gün
@@ -639,26 +422,27 @@ function CountdownSection({ data }: { data: any }) {
           gridTemplateColumns: "repeat(4, 1fr)",
           gap: "0.625rem",
           maxWidth: "480px",
-          margin: "0 auto 2rem",
+          margin: "0 auto 2.5rem",
         }}
       >
         {blocks.map((b) => (
           <div
             key={b.label}
-            className="d-card"
             style={{
-              padding: "0.875rem 0.5rem",
+              padding: "1rem 0.5rem",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
+              border: "1px solid var(--d-gold)",
+              borderRadius: "8px",
+              background: "transparent",
             }}
           >
             <span
               className="d-serif"
               style={{
                 fontSize: "clamp(1.5rem, 6vw, 2.5rem)",
-                fontWeight: 700,
-                color: "#2C2420",
+                color: "var(--d-espresso)",
                 lineHeight: 1,
               }}
             >
@@ -667,11 +451,11 @@ function CountdownSection({ data }: { data: any }) {
             <span
               className="d-sans"
               style={{
-                fontSize: "0.55rem",
+                fontSize: "0.65rem",
                 letterSpacing: "0.15em",
-                color: "#5A3E2B",
-                marginTop: "0.35rem",
-                fontWeight: 600,
+                color: "var(--d-brown)",
+                marginTop: "0.5rem",
+                textTransform: "uppercase",
               }}
             >
               {b.label}
@@ -685,7 +469,7 @@ function CountdownSection({ data }: { data: any }) {
         style={{
           display: "flex",
           flexWrap: "wrap",
-          gap: "0.625rem",
+          gap: "0.75rem",
           justifyContent: "center",
         }}
       >
@@ -697,7 +481,7 @@ function CountdownSection({ data }: { data: any }) {
           aria-label="Düğünü Google Takvim'e ekle"
         >
           <CalendarPlus size={14} />
-          <span>Düğünü Takvime Ekle (Google)</span>
+          <span>Google Takvim</span>
         </a>
         <button
           className="d-btn-outline"
@@ -725,93 +509,75 @@ function EventCard({ event }: { event: any }) {
     setTimeout(() => setCopied(false), 2500);
   };
 
-  const accent = event.type === "kina" ? "#B5674A" : "#C9A84C";
+  const accent = event.type === "kina" ? "var(--d-rose)" : "var(--d-gold)";
 
   return (
     <div
       className="d-card"
       style={{
-        padding: "1.5rem",
+        padding: "2rem 1.5rem",
         display: "flex",
         flexDirection: "column",
-        gap: "1rem",
-        borderTop: `3px solid ${accent}`,
+        gap: "1.25rem",
+        borderTop: `1px solid ${accent}`,
+        borderRadius: "4px",
       }}
     >
       {/* Badge + Time */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: "0.5rem",
-        }}
-      >
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
         <span
           className="d-sans"
           style={{
-            fontSize: "0.7rem",
-            fontWeight: 700,
-            letterSpacing: "0.1em",
+            fontSize: "0.65rem",
+            letterSpacing: "0.15em",
             textTransform: "uppercase",
-            background: `${accent}22`,
-            color: accent,
-            padding: "0.3rem 0.75rem",
-            borderRadius: "9999px",
+            background: "var(--d-cream-dark)",
+            color: "var(--d-espresso)",
+            padding: "0.4rem 0.8rem",
+            borderRadius: "4px",
+            border: `1px solid ${accent}`
           }}
         >
           {event.title}
         </span>
-        <span
-          className="d-sans"
-          style={{ fontSize: "0.8rem", color: "#5A3E2B", display: "flex", alignItems: "center", gap: "0.3rem" }}
-        >
-          <Clock size={13} color={accent} />
+        <span className="d-sans" style={{ fontSize: "0.85rem", color: "var(--d-brown)", display: "flex", alignItems: "center", gap: "0.4rem" }}>
+          <Clock size={14} color={accent} />
           {event.startTime}
           {event.endTime ? ` – ${event.endTime}` : ""}
         </span>
       </div>
 
-      {/* Venue */}
+      {/* Venue & Date */}
       <div>
-        <h3
-          className="d-serif"
-          style={{ fontSize: "clamp(1.2rem, 4.5vw, 1.65rem)", fontWeight: 700, color: "#2C2420", lineHeight: 1.2 }}
-        >
+        <h3 className="d-serif" style={{ fontSize: "clamp(1.4rem, 5vw, 1.8rem)", fontWeight: 500, color: "var(--d-espresso)", lineHeight: 1.2 }}>
           {event.venueName}
         </h3>
         {event.venueSubtitle && (
-          <p
-            className="d-sans"
-            style={{ fontSize: "0.8rem", color: "#5A3E2B", marginTop: "0.2rem", fontStyle: "italic" }}
-          >
+          <p className="d-serif" style={{ fontSize: "1rem", color: "var(--d-brown)", marginTop: "0.3rem", fontStyle: "italic" }}>
             {event.venueSubtitle}
           </p>
         )}
+        <p className="d-sans" style={{ fontSize: "0.8rem", color: accent, marginTop: "0.6rem", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+          {formatDateTR(event.dateISO)}
+        </p>
       </div>
-
-      {/* Date */}
-      <p className="d-sans" style={{ fontSize: "0.875rem", fontWeight: 700, color: accent }}>
-        {formatDateTR(event.dateISO)}
-      </p>
 
       {/* Address */}
       <div
         style={{
-          background: "#FFFDF9",
-          border: "1px solid rgba(201,168,76,0.2)",
-          borderRadius: "0.875rem",
-          padding: "0.875rem",
+          background: "var(--d-cream)",
+          border: "1px solid var(--d-gold-light)",
+          borderRadius: "4px",
+          padding: "1rem",
           display: "flex",
-          gap: "0.625rem",
+          gap: "0.75rem",
           alignItems: "flex-start",
         }}
       >
-        <MapPin size={16} color="#C9A84C" style={{ flexShrink: 0, marginTop: "2px" }} />
-        <div className="d-sans" style={{ fontSize: "0.85rem", color: "#2C2420", lineHeight: 1.5 }}>
+        <MapPin size={16} color="var(--d-gold)" style={{ flexShrink: 0, marginTop: "2px" }} />
+        <div className="d-sans" style={{ fontSize: "0.85rem", color: "var(--d-espresso)", lineHeight: 1.6 }}>
           <div>{event.address}</div>
-          <div style={{ color: "#5A3E2B", marginTop: "0.1rem" }}>{event.district}</div>
+          <div style={{ color: "var(--d-brown)", marginTop: "0.2rem" }}>{event.district}</div>
         </div>
       </div>
 
@@ -821,59 +587,36 @@ function EventCard({ event }: { event: any }) {
           className="d-sans"
           style={{
             fontSize: "0.8rem",
-            color: "#5A3E2B",
+            color: "var(--d-brown)",
             display: "flex",
             alignItems: "center",
-            gap: "0.4rem",
-            background: "rgba(201,168,76,0.08)",
-            padding: "0.6rem 0.875rem",
-            borderRadius: "0.75rem",
-            border: "1px solid rgba(201,168,76,0.2)",
+            gap: "0.5rem",
+            background: "var(--d-cream-dark)",
+            padding: "0.75rem 1rem",
+            borderRadius: "4px",
+            border: "1px solid var(--d-gold-light)",
           }}
         >
-          <Car size={14} color="#C9A84C" />
-          <span>Konvoy hareket saati: <strong>{event.convoyTime}</strong></span>
+          <Car size={15} color="var(--d-gold)" />
+          <span>Konvoy hareket saati: <strong style={{fontWeight: 500}}>{event.convoyTime}</strong></span>
         </div>
       )}
 
       {/* Buttons */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-        <a
-          href={event.googleMapsUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="d-btn-dark"
-          aria-label={`${event.venueName} konumunu Google Harita'da aç`}
-        >
-          <Navigation size={14} color="#C9A84C" />
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.6rem", marginTop: "0.5rem" }}>
+        <a href={event.googleMapsUrl} target="_blank" rel="noopener noreferrer" className="d-btn-dark" aria-label="Haritada Aç">
+          <Navigation size={14} color="var(--d-gold-light)" />
           <span>Haritada Aç</span>
         </a>
-
-        <button
-          className="d-btn-outline"
-          onClick={handleCopyAddr}
-          aria-label="Adresi kopyala"
-        >
+        <button className="d-btn-outline" onClick={handleCopyAddr} aria-label="Adresi kopyala">
           {copied ? <Check size={13} color="#16a34a" /> : <Copy size={13} />}
           <span>{copied ? "Kopyalandı!" : "Adresi Kopyala"}</span>
         </button>
-
-        <a
-          href={buildGoogleCalUrl(event)}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="d-btn-outline"
-          aria-label="Google Takvim'e ekle"
-        >
+        <a href={buildGoogleCalUrl(event)} target="_blank" rel="noopener noreferrer" className="d-btn-outline" aria-label="Google Takvim'e ekle">
           <CalendarPlus size={13} />
           <span>Google Takvim</span>
         </a>
-
-        <button
-          className="d-btn-outline"
-          onClick={() => downloadIcs(event)}
-          aria-label="Apple Takvim (.ics) indir"
-        >
+        <button className="d-btn-outline" onClick={() => downloadIcs(event)} aria-label="Apple Takvim (.ics) indir">
           <CalendarPlus size={13} />
           <span>Apple Takvim</span>
         </button>
@@ -967,38 +710,38 @@ function LcvSection({ guestName, guestHash, data }: { guestName?: string; guestH
     }
 
     return (
-      <div className="d-card d-reveal" style={{ padding: "2rem", textAlign: "center" }}>
+      <div className="d-card d-reveal" style={{ padding: "2.5rem 2rem", textAlign: "center", borderRadius: "4px" }}>
         <div
           style={{
             width: "60px",
             height: "60px",
             borderRadius: "50%",
-            background: "rgba(22,163,74,0.12)",
-            border: "1.5px solid rgba(22,163,74,0.4)",
+            background: "var(--d-cream-dark)",
+            border: "1px solid var(--d-gold)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            margin: "0 auto 1rem",
+            margin: "0 auto 1.5rem",
           }}
         >
-          <Check size={28} color="#16a34a" />
+          <Check size={28} color="var(--d-gold-dark)" />
         </div>
-        <h3 className="d-serif" style={{ fontSize: "1.5rem", color: "#2C2420", marginBottom: "0.5rem" }}>
+        <h3 className="d-serif" style={{ fontSize: "1.6rem", color: "var(--d-espresso)", marginBottom: "0.5rem" }}>
           Teşekkür ederiz, {form.name}!
         </h3>
-        <p className="d-sans" style={{ fontSize: "0.9rem", color: "#5A3E2B", maxWidth: "360px", margin: "0 auto" }}>
+        <p className="d-serif" style={{ fontSize: "1.1rem", color: "var(--d-brown)", maxWidth: "360px", margin: "0 auto", fontStyle: "italic" }}>
           {form.attending === "yes"
             ? `Katılım bildiriminiz alındı. Sizi aramızda görmekten mutluluk duyacağız!`
             : "Yanıtınız için teşekkür ederiz. Dualarınızla yanımızda olduğunuzu biliyoruz."}
         </p>
         
-        <p className="d-sans" style={{ fontSize: "0.85rem", color: "#C9A84C", marginTop: "1rem" }}>
+        <p className="d-sans" style={{ fontSize: "0.8rem", color: "var(--d-gold)", marginTop: "1.5rem", letterSpacing: "0.05em", textTransform: "uppercase" }}>
           <strong>Özet:</strong> {summary}
         </p>
 
         <button
           className="d-btn-outline"
-          style={{ marginTop: "1.25rem" }}
+          style={{ marginTop: "1.5rem" }}
           onClick={handleUpdate}
         >
           Yanıtımı Güncelle
@@ -1010,53 +753,55 @@ function LcvSection({ guestName, guestHash, data }: { guestName?: string; guestH
   const isAttending = form.attending === "yes";
 
   return (
-    <div className="d-card d-reveal" style={{ padding: "1.5rem" }}>
-      <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
+    <div className="d-card d-reveal" style={{ padding: "2.5rem 1.5rem", borderRadius: "4px" }}>
+      <div style={{ textAlign: "center", marginBottom: "2rem" }}>
         <SectionLabel>Katılım Bildirimi</SectionLabel>
         <h2
           className="d-script"
-          style={{ fontSize: "clamp(1.8rem, 6vw, 2.5rem)", color: "#2C2420" }}
+          style={{ fontSize: "clamp(2rem, 8vw, 3rem)", color: "var(--d-espresso)" }}
         >
-          LCV
+          Lütfen Cevap Veriniz
         </h2>
         <p
           className="d-sans"
-          style={{ fontSize: "0.85rem", color: "#5A3E2B", marginTop: "0.5rem", maxWidth: "380px", margin: "0.5rem auto 0" }}
+          style={{ fontSize: "0.85rem", color: "var(--d-brown)", marginTop: "0.75rem", maxWidth: "380px", margin: "0.75rem auto 0" }}
         >
           Hazırlıklarımızı eksiksiz yapabilmemiz için lütfen en geç{" "}
-          <strong>{formatDateTR(data.lcvDeadlineISO)}</strong> tarihine kadar yanıtlayınız.
+          <strong style={{fontWeight: 500, color: "var(--d-espresso)"}}>{formatDateTR(data.lcvDeadlineISO)}</strong> tarihine kadar yanıtlayınız.
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-        {/* Attending choice */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.625rem" }}>
+      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+        {/* Attending choice - Elegant Radio Boxes */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
           {(["yes", "no"] as Attending[]).map((val) => (
             <button
               key={val}
               type="button"
               onClick={() => update("attending", val)}
               style={{
-                padding: "0.75rem",
-                borderRadius: "0.875rem",
-                border: `1.5px solid ${form.attending === val ? "#C9A84C" : "rgba(201,168,76,0.3)"}`,
-                background: form.attending === val ? "#2C2420" : "#FFFDF9",
-                color: form.attending === val ? "#FAF7F2" : "#2C2420",
+                padding: "1rem 0.5rem",
+                borderRadius: "4px",
+                border: `1px solid ${form.attending === val ? "var(--d-gold)" : "var(--d-gold-light)"}`,
+                background: form.attending === val ? "var(--d-espresso)" : "var(--d-cream)",
+                color: form.attending === val ? "var(--d-cream)" : "var(--d-brown)",
                 fontFamily: "var(--d-font-sans)",
-                fontWeight: 600,
-                fontSize: "0.875rem",
+                fontWeight: 500,
+                fontSize: "0.85rem",
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
                 cursor: "pointer",
                 transition: "all 0.2s ease",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: "0.4rem",
-                minHeight: "48px",
+                gap: "0.5rem",
+                boxShadow: form.attending === val ? "0 4px 12px rgba(59,42,32,0.15)" : "0 2px 6px rgba(0,0,0,0.02)",
               }}
               aria-pressed={form.attending === val}
             >
               {val === "yes" ? (
-                <><Heart size={14} fill={form.attending === "yes" ? "#C9A84C" : "none"} color="#C9A84C" />Katılıyorum</>
+                <><Heart size={14} fill={form.attending === "yes" ? "var(--d-gold)" : "none"} color={form.attending === "yes" ? "var(--d-gold)" : "var(--d-brown)"} />Katılıyorum</>
               ) : (
                 <span>Katılamıyorum</span>
               )}
@@ -1100,7 +845,7 @@ function LcvSection({ guestName, guestHash, data }: { guestName?: string; guestH
               <option value="ikisi">Her İkisi</option>
             </select>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.625rem" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
               <select
                 className="d-input"
                 value={form.count}
@@ -1144,10 +889,10 @@ function LcvSection({ guestName, guestHash, data }: { guestName?: string; guestH
             display: "flex",
             alignItems: "flex-start",
             gap: "0.6rem",
-            fontSize: "0.78rem",
-            color: "#5A3E2B",
+            fontSize: "0.75rem",
+            color: "var(--d-brown)",
             cursor: "pointer",
-            lineHeight: 1.5,
+            lineHeight: 1.6,
           }}
         >
           <input
@@ -1155,14 +900,14 @@ function LcvSection({ guestName, guestHash, data }: { guestName?: string; guestH
             checked={form.kvkk}
             onChange={(e) => update("kvkk", e.target.checked)}
             required
-            style={{ marginTop: "2px", accentColor: "#C9A84C", cursor: "pointer" }}
+            style={{ marginTop: "3px", accentColor: "var(--d-gold)", cursor: "pointer" }}
           />
           <span>
             Paylaştığım ad, katılım durumu, telefon ve mesaj bilgilerinin yalnızca düğün
             organizasyonu amacıyla işleneceğini okudum, onaylıyorum.{" "}
             <button
               type="button"
-              style={{ color: "#C9A84C", textDecoration: "underline", background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", fontSize: "inherit" }}
+              style={{ color: "var(--d-gold-dark)", textDecoration: "underline", background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", fontSize: "inherit", padding: 0 }}
               onClick={() => setShowKvkk(true)}
             >
               Aydınlatma Metni
@@ -1171,14 +916,14 @@ function LcvSection({ guestName, guestHash, data }: { guestName?: string; guestH
         </label>
 
         <button
-          className="d-btn-gold"
+          className="d-btn-dark"
           type="submit"
-          disabled={!form.kvkk}
-          style={{ width: "100%", opacity: form.kvkk ? 1 : 0.5 }}
+          disabled={!form.kvkk || submitting}
+          style={{ width: "100%", opacity: form.kvkk ? 1 : 0.5, marginTop: "0.5rem" }}
           aria-label="Bildirimi gönder"
         >
           <Send size={15} />
-          <span>Bildirimi Gönder</span>
+          <span>{submitting ? "Gönderiliyor..." : "LCV Gönder"}</span>
         </button>
       </form>
 
@@ -1199,13 +944,13 @@ function LcvSection({ guestName, guestHash, data }: { guestName?: string; guestH
         >
           <div
             className="d-card"
-            style={{ maxWidth: "480px", padding: "1.5rem", maxHeight: "80vh", overflowY: "auto" }}
+            style={{ maxWidth: "480px", padding: "2rem", maxHeight: "80vh", overflowY: "auto", borderRadius: "4px" }}
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="d-serif" style={{ fontSize: "1.3rem", marginBottom: "1rem" }}>
+            <h3 className="d-serif" style={{ fontSize: "1.4rem", marginBottom: "1rem", color: "var(--d-espresso)" }}>
               Kişisel Veri Aydınlatma Metni
             </h3>
-            <p className="d-sans" style={{ fontSize: "0.85rem", color: "#5A3E2B", lineHeight: 1.7 }}>
+            <p className="d-sans" style={{ fontSize: "0.85rem", color: "var(--d-brown)", lineHeight: 1.7 }}>
               Bu form aracılığıyla toplanan <strong>ad-soyad, katılım durumu, telefon numarası ve mesaj</strong>{" "}
               bilgileri, yalnızca <strong>Minel & Muhammed düğün organizasyonunun</strong> planlanması
               ve yönetilmesi amacıyla işlenmektedir. Bilgileriniz üçüncü taraflarla paylaşılmamakta
@@ -1213,8 +958,8 @@ function LcvSection({ guestName, guestHash, data }: { guestName?: string; guestH
               saklıdır.
             </p>
             <button
-              className="d-btn-gold"
-              style={{ marginTop: "1rem", width: "100%" }}
+              className="d-btn-dark"
+              style={{ marginTop: "1.5rem", width: "100%" }}
               onClick={() => setShowKvkk(false)}
             >
               Anladım, Kapat
@@ -1235,6 +980,7 @@ function GuestbookSection() {
   const [name, setName] = useState("");
   const [msg, setMsg] = useState("");
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   // Mesajları API'den yükle
   useEffect(() => {
@@ -1247,6 +993,7 @@ function GuestbookSection() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !msg.trim()) return;
+    setSubmitting(true);
     try {
       const res = await fetch("/davetiye/minelmuhammed/api/guestbook", {
         method: "POST",
@@ -1258,6 +1005,7 @@ function GuestbookSection() {
         setEntries((prev) => [entry, ...prev]);
       }
     } catch { /* sessiz hata */ }
+    setSubmitting(false);
     setSent(true);
     setName("");
     setMsg("");
@@ -1270,12 +1018,12 @@ function GuestbookSection() {
         <SectionLabel>Sevgi &amp; Dilekler</SectionLabel>
         <h2
           className="d-script"
-          style={{ fontSize: "clamp(1.8rem, 6vw, 2.8rem)", color: "#2C2420" }}
+          style={{ fontSize: "clamp(2rem, 8vw, 3rem)", color: "var(--d-espresso)" }}
         >
           Dua &amp; Tebrik Duvarı
         </h2>
-        <div className="d-divider" style={{ marginTop: "0.75rem" }}>
-          <Heart size={14} fill="#C9A84C" color="#C9A84C" />
+        <div className="d-divider" style={{ marginTop: "1rem" }}>
+          <Heart size={14} fill="var(--d-gold)" color="var(--d-gold)" />
         </div>
       </div>
 
@@ -1283,9 +1031,9 @@ function GuestbookSection() {
       {sent ? (
         <div
           className="d-card"
-          style={{ padding: "1.5rem", textAlign: "center", marginBottom: "1.5rem" }}
+          style={{ padding: "2.5rem", textAlign: "center", marginBottom: "1.5rem", borderRadius: "4px" }}
         >
-          <p className="d-serif" style={{ fontSize: "1.1rem", color: "#2C2420" }}>
+          <p className="d-serif" style={{ fontSize: "1.3rem", color: "var(--d-espresso)", fontStyle: "italic" }}>
             Mesajınız alındı! Onaylandıktan sonra yayınlanacak. ✨
           </p>
         </div>
@@ -1293,7 +1041,7 @@ function GuestbookSection() {
         <form
           onSubmit={handleSubmit}
           className="d-card"
-          style={{ padding: "1.25rem", marginBottom: "1.5rem", display: "flex", flexDirection: "column", gap: "0.875rem" }}
+          style={{ padding: "2rem", marginBottom: "2rem", display: "flex", flexDirection: "column", gap: "1.25rem", borderRadius: "4px" }}
         >
           <input
             className="d-input"
@@ -1307,7 +1055,7 @@ function GuestbookSection() {
           <div style={{ position: "relative" }}>
             <textarea
               className="d-textarea"
-              rows={3}
+              rows={4}
               placeholder="Güzel dileklerinizi yazın…"
               value={msg}
               onChange={(e) => setMsg(e.target.value)}
@@ -1319,10 +1067,10 @@ function GuestbookSection() {
               className="d-sans"
               style={{
                 position: "absolute",
-                bottom: "0.5rem",
-                right: "0.5rem",
-                fontSize: "0.65rem",
-                color: msg.length >= 500 ? "#ef4444" : "rgba(201,168,76,0.6)",
+                bottom: "0.75rem",
+                right: "0.75rem",
+                fontSize: "0.7rem",
+                color: msg.length >= 500 ? "#ef4444" : "var(--d-brown)",
               }}
             >
               {msg.length}/500
@@ -1330,37 +1078,37 @@ function GuestbookSection() {
           </div>
           <p
             className="d-sans"
-            style={{ fontSize: "0.75rem", color: "#5A3E2B", textAlign: "center", marginTop: "-0.25rem" }}
+            style={{ fontSize: "0.75rem", color: "var(--d-brown)", textAlign: "center", marginTop: "-0.5rem" }}
           >
             Mesajınız onaylandıktan sonra yayınlanır.
           </p>
-          <button className="d-btn-gold" type="submit" aria-label="Mesaj gönder">
-            <Send size={14} />
-            <span>Gönder</span>
+          <button className="d-btn-dark" type="submit" aria-label="Mesaj gönder" disabled={submitting}>
+            <Send size={15} />
+            <span>{submitting ? "Gönderiliyor..." : "Deftere Yaz"}</span>
           </button>
         </form>
       )}
 
       {/* Existing approved messages */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "0.875rem" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
         {entries.map((entry) => (
           <div
             key={entry.id}
             className="d-card d-msg-new"
-            style={{ padding: "1.25rem" }}
+            style={{ padding: "1.5rem", borderRadius: "4px", border: "1px solid var(--d-gold-light)", background: "var(--d-cream)" }}
           >
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
-              <span className="d-serif" style={{ fontWeight: 700, fontSize: "1rem", color: "#2C2420" }}>
-                <Heart size={12} fill="#C9A84C" color="#C9A84C" style={{ marginRight: "0.35rem" }} />
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.75rem", alignItems: "center" }}>
+              <span className="d-serif" style={{ fontWeight: 600, fontSize: "1.2rem", color: "var(--d-espresso)" }}>
+                <Heart size={14} fill="var(--d-gold-dark)" color="var(--d-gold-dark)" style={{ marginRight: "0.4rem" }} />
                 {entry.name}
               </span>
-              <span className="d-sans" style={{ fontSize: "0.7rem", color: "#5A3E2B" }}>
+              <span className="d-sans" style={{ fontSize: "0.75rem", color: "var(--d-brown)", letterSpacing: "0.05em" }}>
                 {formatDateTR(entry.createdAt)}
               </span>
             </div>
             <p
               className="d-serif"
-              style={{ fontSize: "0.975rem", color: "#2C2420", lineHeight: 1.65, fontStyle: "italic" }}
+              style={{ fontSize: "1.1rem", color: "var(--d-espresso)", lineHeight: 1.7, fontStyle: "italic" }}
             >
               &ldquo;{entry.message}&rdquo;
             </p>
@@ -1435,6 +1183,7 @@ export default function DavetiyeMinelMuhammedPage() {
     audio.loop = data.music.loop;
     audio.volume = 0;
     audio.preload = "auto";
+    audio.currentTime = 18; // Start at 18 seconds
     audioRef.current = audio;
 
     audio.addEventListener("error", () => setAudioError(true));
@@ -1479,7 +1228,7 @@ export default function DavetiyeMinelMuhammedPage() {
     }, 80);
   }, [data?.music?.volume]);
 
-  const handleCoverOpen = useCallback(() => {
+  const handleMusicStart = useCallback(() => {
     const audio = audioRef.current;
     if (!audio) return;
     audio
@@ -1487,14 +1236,13 @@ export default function DavetiyeMinelMuhammedPage() {
       .then(() => {
         setIsPlaying(true);
         fadeIn();
-        // Hide cover after animation
-        setTimeout(() => setCoverVisible(false), 2100);
       })
-      .catch(() => {
-        // Audio blocked — hide cover anyway
-        setTimeout(() => setCoverVisible(false), 2100);
-      });
+      .catch(() => {});
   }, [fadeIn]);
+
+  const handleCoverClose = useCallback(() => {
+    setCoverVisible(false);
+  }, []);
 
   const handleTogglePlay = () => {
     const audio = audioRef.current;
@@ -1528,7 +1276,7 @@ export default function DavetiyeMinelMuhammedPage() {
   return (
     <>
       {/* Cover screen */}
-      {coverVisible && <CoverScreen onOpen={handleCoverOpen} data={data} />}
+      {coverVisible && <CoverScreen onPlayStart={handleMusicStart} onClose={handleCoverClose} data={data} />}
 
       {/* Floating player — sadece müzik açıksa */}
       {data.music.enabled && (
@@ -1549,121 +1297,127 @@ export default function DavetiyeMinelMuhammedPage() {
         }}
       >
         {/* ── Hero ── */}
-        <section className="d-section" style={{ textAlign: "center" }}>
-          {/* Decorative monogram */}
+        <section className="d-section" style={{ position: "relative", textAlign: "center" }}>
+          
+          {/* Bismillah Text at top */}
+          <div className="d-reveal d-arabic" style={{ fontSize: "1.75rem", color: "var(--d-gold-dark)", marginBottom: "1.5rem" }}>
+            بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم
+          </div>
+          
+          {/* Decorative monogram (Solid Gold Circle) */}
           <div
-            className="d-ring-glow"
+            className="d-reveal d-float"
             style={{
-              width: "clamp(72px, 20vw, 100px)",
-              height: "clamp(72px, 20vw, 100px)",
+              width: "56px",
+              height: "56px",
               borderRadius: "50%",
-              border: "2px solid rgba(201,168,76,0.5)",
+              background: "linear-gradient(135deg, var(--d-gold-light) 0%, var(--d-gold) 50%, var(--d-gold-dark) 100%)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              margin: "0 auto 1.5rem",
-              background: "linear-gradient(160deg, #FFFDF9, #F5EFE6)",
+              margin: "0 auto 2rem",
+              boxShadow: "0 4px 12px rgba(184, 146, 74, 0.2)",
             }}
           >
-            <div
-              style={{
-                width: "calc(100% - 10px)",
-                height: "calc(100% - 10px)",
-                borderRadius: "50%",
-                border: "1px solid rgba(201,168,76,0.3)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
+            <span
+              className="d-serif"
+              style={{ fontSize: "1.2rem", color: "var(--d-cream)", fontWeight: 600, letterSpacing: "1px" }}
             >
-              <span
-                className="d-script"
-                style={{ fontSize: "clamp(1.2rem, 5vw, 1.6rem)", color: "#C9A84C" }}
-              >
-                M &amp; M
-              </span>
-            </div>
+              M&M
+            </span>
           </div>
 
           {/* Guest greeting */}
           {guestGreeting ? (
             <p
               className="d-sans d-reveal"
-              style={{
-                fontSize: "1rem",
-                color: "#C9A84C",
-                marginBottom: "1rem",
-                fontWeight: 600,
-                padding: "0 1rem"
-              }}
+              style={{ fontSize: "1rem", color: "var(--d-gold)", marginBottom: "1rem", fontWeight: 500, padding: "0 1rem" }}
             >
               {guestGreeting}
             </p>
           ) : guestName ? (
             <p
               className="d-sans d-reveal"
-              style={{
-                fontSize: "0.85rem",
-                color: "#5A3E2B",
-                marginBottom: "0.75rem",
-                letterSpacing: "0.05em",
-              }}
+              style={{ fontSize: "0.9rem", color: "var(--d-espresso)", marginBottom: "0.75rem", letterSpacing: "0.05em" }}
             >
-              Sayın Misafirimiz: <strong>{guestName}</strong>
+              Sayın Misafirimiz: <strong style={{fontWeight: 600}}>{guestName}</strong>
             </p>
           ) : null}
 
-          {/* Names */}
+          {/* Names in elegant serif */}
           <h1
-            className="d-script d-reveal"
-            style={{
-              fontSize: "clamp(2.4rem, 10vw, 5rem)",
-              color: "#2C2420",
-              lineHeight: 1.1,
-              overflow: "hidden",
-            }}
+            className="d-serif d-reveal"
+            style={{ fontSize: "clamp(2.5rem, 10vw, 3.5rem)", color: "var(--d-espresso)", lineHeight: 1.1, fontWeight: 500 }}
           >
             {data.brideName.split(" ")[0]}
           </h1>
 
           <div
             className="d-reveal"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "0.875rem",
-              margin: "0.6rem 0",
-            }}
+            style={{ display: "flex", alignItems: "center", justifyContent: "center", margin: "0.5rem 0" }}
           >
-            <div style={{ height: "1px", flex: 1, background: "linear-gradient(to right, transparent, #C9A84C)" }} />
-            <Heart size={18} fill="#C9A84C" color="#C9A84C" />
-            <div style={{ height: "1px", flex: 1, background: "linear-gradient(to left, transparent, #C9A84C)" }} />
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--d-gold)">
+              <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5Z" />
+            </svg>
           </div>
 
           <h1
-            className="d-script d-reveal"
-            style={{
-              fontSize: "clamp(2.4rem, 10vw, 5rem)",
-              color: "#2C2420",
-              lineHeight: 1.1,
-              overflow: "hidden",
-            }}
+            className="d-serif d-reveal"
+            style={{ fontSize: "clamp(2.5rem, 10vw, 3.5rem)", color: "var(--d-espresso)", lineHeight: 1.1, fontWeight: 500 }}
           >
             {data.groomName.split(" ")[0]}
           </h1>
 
-          {/* Kına / Düğün badges */}
+          {/* Kına / Düğün badges - Dotted style like image */}
           <div
             className="d-reveal d-sans"
             style={{
-              marginTop: "1.25rem",
-              fontSize: "clamp(0.7rem, 2.5vw, 0.85rem)",
-              color: "#5A3E2B",
-              letterSpacing: "0.07em",
+              marginTop: "1.5rem",
+              fontSize: "clamp(0.7rem, 2.5vw, 0.8rem)",
+              color: "var(--d-espresso)",
+              letterSpacing: "0.15em",
+              textTransform: "uppercase",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "0.5rem",
+              fontWeight: 500
             }}
           >
-            28 Ekim Çarşamba&nbsp;•&nbsp;Kına&nbsp;&nbsp;|&nbsp;&nbsp;31 Ekim Cumartesi&nbsp;•&nbsp;Düğün
+            <span>28 EKİM ÇARŞAMBA</span>
+            <span style={{color: "var(--d-gold)"}}>•</span>
+            <span>31 EKİM CUMARTESİ</span>
+          </div>
+
+          {/* Arched Image Frame */}
+          <div 
+            className="d-reveal"
+            style={{
+              marginTop: "3rem",
+              marginInline: "auto",
+              width: "100%",
+              maxWidth: "280px",
+              aspectRatio: "2/3",
+              border: "1px solid var(--d-gold-light)",
+              borderRadius: "140px 140px 0 0",
+              padding: "0.5rem",
+              boxShadow: "0 10px 30px rgba(90, 62, 43, 0.05)",
+              overflow: "hidden"
+            }}
+          >
+            <div
+              className="d-slow-zoom"
+              style={{
+                width: "100%",
+                height: "100%",
+                borderRadius: "140px 140px 0 0",
+                background: "url('/davetiye/minelmuhammed/couple.jpg') center/cover",
+                position: "relative"
+              }}
+            >
+              {/* Optional: Add a subtle overlay for romance */}
+              <div style={{position: "absolute", inset: 0, background: "rgba(250,246,239,0.1)"}}></div>
+            </div>
           </div>
         </section>
 
@@ -1679,10 +1433,11 @@ export default function DavetiyeMinelMuhammedPage() {
           {/* Corner ornament (top-left, top-right) */}
           <div
             style={{
-              background: "rgba(255,253,249,0.9)",
-              border: "1px solid rgba(201,168,76,0.35)",
-              borderRadius: "1.5rem",
-              padding: "2rem 1.5rem",
+              background: "var(--d-cream-dark)",
+              border: "1px solid var(--d-gold)",
+              boxShadow: "0 0 0 4px var(--d-cream), 0 0 0 5px var(--d-gold-light)", // Double gold border trick
+              borderRadius: "4px", // Print cards usually aren't too rounded
+              padding: "2.5rem 1.5rem",
               position: "relative",
             }}
           >
@@ -1690,27 +1445,22 @@ export default function DavetiyeMinelMuhammedPage() {
             {["tl", "tr", "bl", "br"].map((corner) => (
               <svg
                 key={corner}
-                width="32"
-                height="32"
+                width="24"
+                height="24"
                 viewBox="0 0 32 32"
                 style={{
                   position: "absolute",
-                  top: corner.startsWith("t") ? "8px" : "auto",
-                  bottom: corner.startsWith("b") ? "8px" : "auto",
-                  left: corner.endsWith("l") ? "8px" : "auto",
-                  right: corner.endsWith("r") ? "8px" : "auto",
-                  opacity: 0.45,
+                  top: corner.startsWith("t") ? "12px" : "auto",
+                  bottom: corner.startsWith("b") ? "12px" : "auto",
+                  left: corner.endsWith("l") ? "12px" : "auto",
+                  right: corner.endsWith("r") ? "12px" : "auto",
+                  opacity: 0.6,
                   transform: `rotate(${corner === "tr" ? 90 : corner === "br" ? 180 : corner === "bl" ? 270 : 0}deg)`,
                 }}
               >
-                <path
-                  d="M2 2 Q2 14 14 14"
-                  stroke="#C9A84C"
-                  strokeWidth="1.5"
-                  fill="none"
-                  strokeLinecap="round"
-                />
-                <circle cx="2" cy="2" r="1.5" fill="#C9A84C" />
+                <path d="M2 2 L14 14" stroke="var(--d-gold)" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+                <path d="M14 2 L2 14" stroke="var(--d-gold)" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+                <circle cx="8" cy="8" r="2" fill="var(--d-gold-dark)" />
               </svg>
             ))}
 
@@ -1718,9 +1468,9 @@ export default function DavetiyeMinelMuhammedPage() {
             <p
               className="d-arabic"
               style={{
-                fontSize: "clamp(1.25rem, 4.5vw, 1.75rem)",
-                lineHeight: 2,
-                color: "#2C2420",
+                fontSize: "clamp(1.4rem, 5vw, 1.8rem)",
+                lineHeight: 1.8,
+                color: "var(--d-espresso)",
                 marginBottom: "0.75rem",
                 whiteSpace: "pre-line",
               }}
@@ -1728,24 +1478,25 @@ export default function DavetiyeMinelMuhammedPage() {
               {data.arabicVerse}
             </p>
 
-            <div className="d-divider" style={{ margin: "0.75rem auto" }}>
-              <Sparkles size={13} color="#C9A84C" />
+            <div className="d-divider" style={{ margin: "1.2rem auto" }}>
+              <Heart size={10} color="var(--d-gold)" fill="var(--d-gold)" />
             </div>
 
             <p
               className="d-serif"
               style={{
-                fontSize: "clamp(1rem, 3.5vw, 1.2rem)",
+                fontSize: "clamp(1.1rem, 3.5vw, 1.3rem)",
                 fontStyle: "italic",
-                color: "#2C2420",
-                marginBottom: "0.4rem",
+                color: "var(--d-espresso)",
+                marginBottom: "0.5rem",
+                fontWeight: 500,
               }}
             >
               {data.arabicVerseTranslation}
             </p>
             <p
               className="d-sans"
-              style={{ fontSize: "0.75rem", color: "#5A3E2B", letterSpacing: "0.1em" }}
+              style={{ fontSize: "0.7rem", color: "var(--d-brown)", letterSpacing: "0.15em", textTransform: "uppercase" }}
             >
               {data.arabicVerseSource}
             </p>
@@ -1760,9 +1511,9 @@ export default function DavetiyeMinelMuhammedPage() {
           <p
             className="d-serif"
             style={{
-              fontSize: "clamp(1rem, 3.5vw, 1.2rem)",
-              lineHeight: 1.85,
-              color: "#2C2420",
+              fontSize: "clamp(1.25rem, 4vw, 1.45rem)",
+              lineHeight: 1.8,
+              color: "var(--d-espresso)",
               fontStyle: "italic",
             }}
           >
@@ -1771,9 +1522,9 @@ export default function DavetiyeMinelMuhammedPage() {
           <p
             className="d-script"
             style={{
-              fontSize: "clamp(1.6rem, 6vw, 2.4rem)",
-              color: "#C9A84C",
-              marginTop: "1rem",
+              fontSize: "clamp(2rem, 8vw, 3rem)",
+              color: "var(--d-gold)",
+              marginTop: "1.5rem",
             }}
           >
             {data.invitationSignature}
@@ -1786,11 +1537,11 @@ export default function DavetiyeMinelMuhammedPage() {
         {/* ── Events (venue) ── */}
         {sec.venue !== false && (
           <section className="d-section" style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-            <div className="d-reveal" style={{ textAlign: "center", marginBottom: "0.5rem" }}>
+            <div className="d-reveal" style={{ textAlign: "center", marginBottom: "1rem" }}>
               <SectionLabel>Merasim Bilgileri</SectionLabel>
               <h2
                 className="d-script"
-                style={{ fontSize: "clamp(1.8rem, 6vw, 2.8rem)", color: "#2C2420" }}
+                style={{ fontSize: "clamp(2rem, 8vw, 3rem)", color: "var(--d-espresso)" }}
               >
                 Etkinlik Detayları
               </h2>
@@ -1807,27 +1558,27 @@ export default function DavetiyeMinelMuhammedPage() {
         {sec.iban && data.ibanInfo?.iban && (
           <section className="d-section d-reveal" style={{ maxWidth: "560px", margin: "0 auto", textAlign: "center" }}>
             <SectionLabel>Hediye</SectionLabel>
-            <h2 className="d-script" style={{ fontSize: "clamp(1.8rem, 6vw, 2.5rem)", color: "#2C2420", marginBottom: "1rem" }}>
+            <h2 className="d-script" style={{ fontSize: "clamp(2rem, 8vw, 3rem)", color: "var(--d-espresso)", marginBottom: "1.5rem" }}>
               IBAN Bilgisi
             </h2>
-            <div className="d-card" style={{ padding: "1.25rem", textAlign: "left" }}>
+            <div className="d-card" style={{ padding: "1.5rem", textAlign: "left", borderRadius: "4px" }}>
               {data.ibanInfo.bankName && (
-                <p className="d-sans" style={{ fontSize: "0.85rem", color: "#5A3E2B", marginBottom: "0.35rem" }}>
+                <p className="d-sans" style={{ fontSize: "0.85rem", color: "var(--d-brown)", marginBottom: "0.35rem" }}>
                   <strong>Banka:</strong> {data.ibanInfo.bankName}
                 </p>
               )}
               {data.ibanInfo.accountHolder && (
-                <p className="d-sans" style={{ fontSize: "0.85rem", color: "#5A3E2B", marginBottom: "0.35rem" }}>
+                <p className="d-sans" style={{ fontSize: "0.85rem", color: "var(--d-brown)", marginBottom: "0.35rem" }}>
                   <strong>Hesap Sahibi:</strong> {data.ibanInfo.accountHolder}
                 </p>
               )}
-              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginTop: "0.5rem" }}>
-                <code className="d-sans" style={{ fontSize: "0.85rem", color: "#2C2420", flex: 1, wordBreak: "break-all" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginTop: "0.75rem", background: "var(--d-cream-dark)", padding: "0.75rem", borderRadius: "4px", border: "1px solid var(--d-gold-light)" }}>
+                <code className="d-sans" style={{ fontSize: "0.9rem", color: "var(--d-espresso)", flex: 1, wordBreak: "break-all", fontWeight: 500 }}>
                   {data.ibanInfo.iban}
                 </code>
                 <button
                   className="d-btn-outline"
-                  style={{ flexShrink: 0 }}
+                  style={{ flexShrink: 0, padding: "0.4rem 0.8rem", fontSize: "0.75rem" }}
                   onClick={() => { navigator.clipboard.writeText(data.ibanInfo.iban); }}
                 >
                   Kopyala
@@ -1852,17 +1603,17 @@ export default function DavetiyeMinelMuhammedPage() {
           className="d-sans"
           style={{
             textAlign: "center",
-            padding: "2.5rem 1rem",
-            borderTop: "1px solid rgba(201,168,76,0.2)",
-            marginTop: "2rem",
+            padding: "3rem 1rem",
+            borderTop: "1px solid var(--d-gold-light)",
+            marginTop: "3rem",
             fontSize: "0.75rem",
-            color: "#5A3E2B",
+            color: "var(--d-brown)",
           }}
         >
-          <p className="d-script" style={{ fontSize: "1.6rem", color: "#2C2420", marginBottom: "0.5rem" }}>
+          <p className="d-script" style={{ fontSize: "2rem", color: "var(--d-espresso)", marginBottom: "0.5rem" }}>
             {data.brideName.split(" ")[0]} &amp; {data.groomName.split(" ")[0]}
           </p>
-          <p style={{ opacity: 0.6 }}>
+          <p style={{ opacity: 0.8, marginTop: "1rem", letterSpacing: "0.05em" }}>
             © 2026 Aurion Core Dijital Davetiyeler
           </p>
         </footer>
