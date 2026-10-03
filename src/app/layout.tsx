@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Poppins, Montserrat } from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import Footer from "@/components/Footer";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -31,7 +30,6 @@ export default function RootLayout({
       <body suppressHydrationWarning>
         <ThemeProvider attribute="data-theme" defaultTheme="light" enableSystem={false}>
           {children}
-          <Footer />
         </ThemeProvider>
       </body>
     </html>

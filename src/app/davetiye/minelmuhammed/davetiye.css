@@ -1,0 +1,327 @@
+/* =========================================================
+   Davetiye sayfasına özel stiller
+   Ana site stillerinden bağımsız çalışır.
+   ========================================================= */
+
+:root {
+  --d-cream: #FAF7F2;
+  --d-cream-dark: #F0E8DC;
+  --d-espresso: #2C2420;
+  --d-brown: #5A3E2B;
+  --d-gold: #C9A84C;
+  --d-gold-light: #E8C97A;
+  --d-gold-dark: #9A7B2C;
+  --d-gold-glow: rgba(201, 168, 76, 0.25);
+  --d-red-wax: #8B0000;
+  --d-font-serif: var(--font-cormorant), Georgia, serif;
+  --d-font-script: var(--font-great-vibes), cursive;
+  --d-font-arabic: var(--font-amiri), serif;
+  --d-font-sans: var(--font-nunito), system-ui, sans-serif;
+}
+
+/* ── Base ──────────────────────────────────────────────── */
+.davetiye-body {
+  background-color: var(--d-cream);
+  color: var(--d-espresso);
+  font-family: var(--d-font-serif);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+/* Prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Typography helpers ────────────────────────────────── */
+.d-script    { font-family: var(--d-font-script); }
+.d-serif     { font-family: var(--d-font-serif); }
+.d-arabic    { font-family: var(--d-font-arabic); direction: rtl; text-align: center; }
+.d-sans      { font-family: var(--d-font-sans); }
+
+.d-gold-text {
+  background: linear-gradient(135deg, var(--d-gold-dark) 0%, var(--d-gold) 50%, var(--d-gold-dark) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Cards ─────────────────────────────────────────────── */
+.d-card {
+  background: rgba(255, 253, 249, 0.92);
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 24px rgba(90, 62, 43, 0.07),
+              0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.d-card:hover {
+  border-color: rgba(201, 168, 76, 0.55);
+  box-shadow: 0 8px 32px rgba(90, 62, 43, 0.12);
+}
+
+/* ── Buttons ───────────────────────────────────────────── */
+.d-btn-gold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, var(--d-gold-light) 0%, var(--d-gold) 50%, var(--d-gold-dark) 100%);
+  color: var(--d-espresso);
+  font-family: var(--d-font-sans);
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
+  box-shadow: 0 6px 20px rgba(201, 168, 76, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  min-height: 48px;
+  touch-action: manipulation;
+}
+
+.d-btn-gold:hover  { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(201,168,76,0.45); }
+.d-btn-gold:active { transform: scale(0.94) translateY(0); box-shadow: 0 4px 10px rgba(201,168,76,0.3); }
+
+.d-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: 9999px;
+  border: 1.5px solid rgba(201, 168, 76, 0.6);
+  background: rgba(255, 253, 249, 0.8);
+  color: var(--d-brown);
+  font-family: var(--d-font-sans);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  letter-spacing: 0.03em;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  text-decoration: none;
+  min-height: 44px;
+  touch-action: manipulation;
+}
+
+.d-btn-outline:hover { background: rgba(201,168,76,0.12); border-color: var(--d-gold); transform: translateY(-1px); }
+.d-btn-outline:active { transform: scale(0.94); background: rgba(201,168,76,0.2); }
+
+.d-btn-dark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: 9999px;
+  background: var(--d-espresso);
+  color: #FAF7F2;
+  font-family: var(--d-font-sans);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  letter-spacing: 0.03em;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  min-height: 44px;
+  touch-action: manipulation;
+}
+
+.d-btn-dark:hover { background: #3d332d; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(44,36,32,0.25); }
+.d-btn-dark:active { transform: scale(0.94); }
+
+.d-btn-dark:hover { background: #4A3B33; }
+
+/* ── Divider ───────────────────────────────────────────── */
+.d-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--d-gold);
+  margin: 0 auto;
+  max-width: 200px;
+}
+
+.d-divider::before,
+.d-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--d-gold));
+}
+
+.d-divider::after {
+  background: linear-gradient(to left, transparent, var(--d-gold));
+}
+
+/* ── Section reveal animation ──────────────────────────── */
+.d-reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.d-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .d-reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* ── Wax Seal ──────────────────────────────────────────── */
+.d-wax-seal {
+  background: radial-gradient(circle at 35% 30%, #C42626 0%, #8B0000 55%, #4A0000 100%);
+  box-shadow:
+    inset 2px 2px 5px rgba(255,255,255,0.35),
+    inset -2px -2px 7px rgba(0,0,0,0.55),
+    0 6px 18px rgba(139,0,0,0.4);
+}
+
+/* ── Gold sparkles ─────────────────────────────────────── */
+@keyframes d-sparkle-rise {
+  0%   { opacity: 0; transform: translateY(0) scale(0.4) rotate(0deg); }
+  30%  { opacity: 0.9; }
+  100% { opacity: 0; transform: translateY(-80px) scale(1) rotate(180deg); }
+}
+
+.d-sparkle {
+  position: absolute;
+  pointer-events: none;
+  animation: d-sparkle-rise linear infinite;
+  will-change: transform, opacity;
+}
+
+/* ── Float animation ───────────────────────────────────── */
+@keyframes d-float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
+
+.d-float { animation: d-float 4s ease-in-out infinite; }
+
+/* ── Handwriting stroke animation ──────────────────────── */
+@keyframes d-draw-stroke {
+  from { stroke-dashoffset: 1000; }
+  to   { stroke-dashoffset: 0; }
+}
+
+/* ── Countdown flip ────────────────────────────────────── */
+@keyframes d-count-flip {
+  0%   { opacity: 1; transform: rotateX(0deg); }
+  50%  { opacity: 0; transform: rotateX(90deg); }
+  51%  { opacity: 0; transform: rotateX(-90deg); }
+  100% { opacity: 1; transform: rotateX(0deg); }
+}
+
+.d-count-flip {
+  animation: d-count-flip 0.4s ease-in-out;
+}
+
+/* ── Equalizer bars ────────────────────────────────────── */
+@keyframes d-eq-bounce {
+  0%, 100% { height: 4px; }
+  50%       { height: 18px; }
+}
+
+.d-eq-bar { animation: d-eq-bounce 1.1s ease-in-out infinite alternate; }
+.d-eq-bar:nth-child(1) { animation-delay: 0.0s; }
+.d-eq-bar:nth-child(2) { animation-delay: 0.2s; }
+.d-eq-bar:nth-child(3) { animation-delay: 0.15s; }
+.d-eq-bar:nth-child(4) { animation-delay: 0.3s; }
+
+/* ── Gold ring glow (photo frames) ────────────────────── */
+@keyframes d-ring-glow {
+  0%, 100% { box-shadow: 0 0 8px 2px rgba(201,168,76,0.3); }
+  50%       { box-shadow: 0 0 20px 6px rgba(201,168,76,0.55); }
+}
+
+.d-ring-glow { animation: d-ring-glow 3s ease-in-out infinite; }
+
+/* ── Gold dust pulse ───────────────────────────────────── */
+@keyframes d-dust-pulse {
+  0%, 100% { opacity: 0.15; transform: scale(0.9); }
+  50%       { opacity: 0.6;  transform: scale(1.3); }
+}
+
+/* ── Envelope & cover screen ───────────────────────────── */
+.d-cover-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: #1C1310;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.d-envelope {
+  position: relative;
+  width: min(90vw, 420px);
+  aspect-ratio: 4 / 3;
+  cursor: pointer;
+  filter: drop-shadow(0 20px 40px rgba(0,0,0,0.6));
+}
+
+/* ── Responsive section spacing ───────────────────────── */
+.d-section {
+  padding: 3rem 1rem;
+}
+
+@media (min-width: 640px) {
+  .d-section { padding: 4.5rem 1.5rem; }
+}
+
+/* ── Form inputs ───────────────────────────────────────── */
+.d-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 0.875rem;
+  border: 1.5px solid rgba(201, 168, 76, 0.35);
+  background: #FFFDF9;
+  color: var(--d-espresso);
+  font-family: var(--d-font-sans);
+  font-size: 0.9375rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+  min-height: 48px;
+}
+
+.d-input::placeholder { color: rgba(44, 36, 32, 0.4); }
+.d-input:focus { border-color: var(--d-gold); }
+
+.d-textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 0.875rem;
+  border: 1.5px solid rgba(201, 168, 76, 0.35);
+  background: #FFFDF9;
+  color: var(--d-espresso);
+  font-family: var(--d-font-serif);
+  font-size: 1rem;
+  outline: none;
+  resize: none;
+  transition: border-color 0.2s ease;
+}
+
+.d-textarea:focus { border-color: var(--d-gold); }
+
+/* ── Guestbook message animate-in ─────────────────────── */
+@keyframes d-msg-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.d-msg-new { animation: d-msg-in 0.5s ease forwards; }

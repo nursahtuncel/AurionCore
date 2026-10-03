@@ -1,0 +1,465 @@
+/* =========================================================
+   Admin Panel Stilleri — Mobil öncelikli, sade, kolay kullanım.
+   ========================================================= */
+
+/* ── Değişkenler ──────────────────────────────────────── */
+:root {
+  --admin-bg: #FAF7F2;
+  --admin-card: #FFFFFF;
+  --admin-border: #E6D5BE;
+  --admin-text: #2C2420;
+  --admin-text-muted: #5A3E2B;
+  --admin-gold: #C9A84C;
+  --admin-gold-light: #E8C97A;
+  --admin-gold-dark: #9A7B2C;
+  --admin-success: #16a34a;
+  --admin-danger: #dc2626;
+  --admin-radius: 12px;
+  --admin-font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* ── Base ─────────────────────────────────────────────── */
+.admin-body {
+  background-color: var(--admin-bg);
+  font-family: var(--admin-font);
+  color: var(--admin-text);
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Navbar ───────────────────────────────────────────── */
+.admin-navbar {
+  background: var(--admin-card);
+  border-bottom: 1px solid var(--admin-border);
+  padding: 0.75rem 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.admin-navbar-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.admin-navbar-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--admin-text);
+}
+
+.admin-navbar-title span {
+  color: var(--admin-gold);
+}
+
+/* ── Mobil menü ───────────────────────────────────────── */
+.admin-nav-links {
+  display: flex;
+  gap: 0.25rem;
+  overflow-x: auto;
+  padding: 0.5rem 1rem;
+  background: var(--admin-card);
+  border-bottom: 1px solid var(--admin-border);
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.admin-nav-links::-webkit-scrollbar {
+  display: none;
+}
+
+.admin-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0.875rem;
+  border-radius: 9999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: none;
+  color: var(--admin-text-muted);
+  background: transparent;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 40px;
+}
+
+.admin-nav-link:active {
+  transform: scale(0.94);
+}
+
+.admin-nav-link:hover {
+  background: rgba(201, 168, 76, 0.1);
+}
+
+.admin-nav-link.active {
+  background: var(--admin-text);
+  color: var(--admin-bg);
+  border-color: var(--admin-text);
+}
+
+/* ── Container ────────────────────────────────────────── */
+.admin-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+/* ── Kart ─────────────────────────────────────────────── */
+.admin-card {
+  background: var(--admin-card);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-radius);
+  padding: 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.admin-card + .admin-card {
+  margin-top: 1rem;
+}
+
+.admin-card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--admin-text);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ── Form elemanları ──────────────────────────────────── */
+.admin-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--admin-text-muted);
+  margin-bottom: 0.35rem;
+}
+
+.admin-input,
+.admin-select,
+.admin-textarea {
+  width: 100%;
+  padding: 0.75rem 0.875rem;
+  border-radius: 8px;
+  border: 1.5px solid var(--admin-border);
+  background: var(--admin-bg);
+  color: var(--admin-text);
+  font-family: var(--admin-font);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+  min-height: 48px;
+  box-sizing: border-box;
+}
+
+.admin-input:focus,
+.admin-select:focus,
+.admin-textarea:focus {
+  border-color: var(--admin-gold);
+}
+
+.admin-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* ── Butonlar ─────────────────────────────────────────── */
+.admin-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  font-family: var(--admin-font);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 48px;
+  touch-action: manipulation;
+}
+
+.admin-btn:active {
+  transform: scale(0.94);
+}
+
+.admin-btn-primary {
+  background: var(--admin-text);
+  color: var(--admin-bg);
+}
+
+.admin-btn-primary:hover {
+  background: #4A3B33;
+}
+
+.admin-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.admin-btn-gold {
+  background: linear-gradient(135deg, var(--admin-gold-light), var(--admin-gold));
+  color: var(--admin-text);
+}
+
+.admin-btn-gold:hover {
+  box-shadow: 0 4px 12px rgba(201, 168, 76, 0.35);
+}
+
+.admin-btn-outline {
+  background: transparent;
+  color: var(--admin-text-muted);
+  border: 1.5px solid var(--admin-border);
+}
+
+.admin-btn-outline:hover {
+  border-color: var(--admin-gold);
+  background: rgba(201, 168, 76, 0.08);
+}
+
+.admin-btn-danger {
+  background: transparent;
+  color: var(--admin-danger);
+  border: 1.5px solid #fecaca;
+}
+
+.admin-btn-danger:hover {
+  background: #fef2f2;
+}
+
+.admin-btn-sm {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.8rem;
+  min-height: 36px;
+}
+
+/* ── Toggle / Switch ──────────────────────────────────── */
+.admin-toggle {
+  position: relative;
+  width: 48px;
+  height: 28px;
+  background: #d1d5db;
+  border-radius: 9999px;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  transition: background 0.2s ease;
+  flex-shrink: 0;
+}
+
+.admin-toggle.active {
+  background: var(--admin-gold);
+}
+
+.admin-toggle::after {
+  content: "";
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  background: white;
+  border-radius: 50%;
+  top: 3px;
+  left: 3px;
+  transition: transform 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.admin-toggle.active::after {
+  transform: translateX(20px);
+}
+
+/* ── Toggle satırı ────────────────────────────────────── */
+.admin-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(230, 213, 190, 0.5);
+}
+
+.admin-toggle-row:last-child {
+  border-bottom: none;
+}
+
+.admin-toggle-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--admin-text);
+}
+
+/* ── İstatistik kartları ──────────────────────────────── */
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.admin-stat-card {
+  background: var(--admin-card);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-radius);
+  padding: 1rem;
+  text-align: center;
+}
+
+.admin-stat-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--admin-text);
+  line-height: 1;
+}
+
+.admin-stat-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--admin-text-muted);
+  margin-top: 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── Tablo ────────────────────────────────────────────── */
+.admin-table-wrap {
+  overflow-x: auto;
+  border-radius: var(--admin-radius);
+  border: 1px solid var(--admin-border);
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  min-width: 600px;
+}
+
+.admin-table th {
+  text-align: left;
+  padding: 0.75rem;
+  background: var(--admin-bg);
+  color: var(--admin-text-muted);
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.admin-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid rgba(230, 213, 190, 0.4);
+  color: var(--admin-text);
+}
+
+.admin-table tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-table tr:hover td {
+  background: rgba(201, 168, 76, 0.04);
+}
+
+/* ── Bildirim tostu ───────────────────────────────────── */
+.admin-toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--admin-text);
+  color: var(--admin-bg);
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 9999;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  animation: admin-toast-in 0.3s ease;
+}
+
+@keyframes admin-toast-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(16px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ── Form grubu ───────────────────────────────────────── */
+.admin-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+
+.admin-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+@media (max-width: 520px) {
+  .admin-form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Badge ────────────────────────────────────────────── */
+.admin-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.admin-badge-green {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.admin-badge-red {
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+/* ── Boş durum ────────────────────────────────────────── */
+.admin-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--admin-text-muted);
+}
+
+.admin-empty-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+  opacity: 0.4;
+}
+
+/* ── Mesaj kartı ──────────────────────────────────────── */
+.admin-msg-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-bottom: 1px solid rgba(230, 213, 190, 0.4);
+}
+
+.admin-msg-card:last-child {
+  border-bottom: none;
+}
