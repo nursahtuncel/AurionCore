@@ -163,9 +163,17 @@ function CoverScreen({ onPlayStart, onClose, data }: { onPlayStart: () => void; 
       setFading(true);
       setTimeout(() => {
         onClose();
-      }, 1200);
-    }, 2000);
+      }, 1600);
+    }, 3200); // 2000'den 3200'e çıkarıldı
   };
+
+  // Zarf kağıdı dokusu (hafif bir CSS deseniyle gerçekçi kağıt hissi)
+  const paperStyle = {
+    backgroundColor: "#F4F0EA",
+    backgroundImage: "url('/davetiye/minelmuhammed/envelope-texture.jpg')",
+    backgroundSize: "200px",
+    backgroundBlendMode: "multiply",
+  } as React.CSSProperties;
 
   return (
     <div
@@ -182,100 +190,130 @@ function CoverScreen({ onPlayStart, onClose, data }: { onPlayStart: () => void; 
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        transition: fading ? "opacity 1.2s ease, visibility 1.2s ease" : undefined,
+        transition: fading ? "opacity 1.6s ease, visibility 1.6s ease" : undefined,
         opacity: fading ? 0 : 1,
         visibility: fading ? "hidden" : "visible",
         pointerEvents: fading ? "none" : "auto",
-        perspective: "1000px"
+        perspective: "1200px"
       }}
     >
       <div style={{
         position: "absolute",
         inset: 0,
-        background: "rgba(240, 235, 225, 0.7)",
-        backdropFilter: "blur(12px)",
-        WebkitBackdropFilter: "blur(12px)",
+        background: "rgba(30, 25, 20, 0.4)",
+        backdropFilter: "blur(8px)",
+        WebkitBackdropFilter: "blur(8px)",
       }} />
 
-      {/* Zarf Konteyneri */}
+      {/* Zarf Konteyneri - Dikey (Portrait) */}
       <div 
         style={{
           position: "relative",
           width: "90vw",
-          maxWidth: "400px",
-          aspectRatio: "1.4",
+          maxWidth: "380px",
+          aspectRatio: "0.68",
           cursor: isOpen ? "default" : "pointer",
           zIndex: 2,
-          transform: isOpen ? "scale(1.05) translateY(30px)" : "scale(1)",
-          transition: "transform 1.8s cubic-bezier(0.2, 0.8, 0.2, 1)",
+          transform: isOpen ? "scale(1.05) translateY(40px)" : "scale(1)",
+          transition: "transform 2.5s cubic-bezier(0.2, 0.8, 0.2, 1)", // 1.8s -> 2.5s
+          filter: "drop-shadow(0 25px 50px rgba(0,0,0,0.4))",
         }}
         onClick={handleClick}
       >
          {/* Zarfın Arka Yüzü (İç kısmı) */}
          <div style={{
            position: "absolute", inset: 0,
-           backgroundColor: "#D9CDB8",
-           borderRadius: "6px",
-           boxShadow: "0 15px 35px rgba(0,0,0,0.2)",
+           backgroundColor: "#D0C4B4",
+           backgroundImage: "url('/davetiye/minelmuhammed/envelope-texture.jpg')",
+           backgroundSize: "200px",
+           backgroundBlendMode: "multiply",
+           borderRadius: "4px",
+           boxShadow: "inset 0 10px 20px rgba(0,0,0,0.2)",
          }} />
 
          {/* İçindeki Kart */}
          <div style={{
            position: "absolute",
-           inset: "10px",
+           inset: "15px",
            backgroundColor: "#FAF7F2",
            borderRadius: "4px",
            display: "flex",
            flexDirection: "column",
            alignItems: "center",
-           justifyContent: "center", /* YAZIYI ORTALAR */
-           transform: isOpen ? "translateY(-120px)" : "translateY(0)",
-           transition: "transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) 0.6s",
-           boxShadow: "0 -2px 10px rgba(0,0,0,0.1)",
+           justifyContent: "center",
+           transform: isOpen ? "translateY(-160px)" : "translateY(0)",
+           transition: "transform 1.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.8s", // Daha yavaş çıkış
+           boxShadow: "0 -4px 15px rgba(0,0,0,0.15)",
            zIndex: isOpen ? 3 : 1
          }}>
-            <p className="d-script" style={{ color: "var(--d-gold-dark)", fontSize: "3rem", lineHeight: 1 }}>
+            <p className="d-script" style={{ color: "var(--d-gold-dark)", fontSize: "3.5rem", lineHeight: 1 }}>
               Davetiye
             </p>
-            <p className="d-sans" style={{ color: "var(--d-espresso)", fontSize: "0.85rem", letterSpacing: "0.15em", marginTop: "0.5rem", textTransform: "uppercase" }}>
-              Minel & Muhammed
+            <p className="d-sans" style={{ color: "var(--d-espresso)", fontSize: "0.9rem", letterSpacing: "0.2em", marginTop: "1rem", textTransform: "uppercase", textAlign: "center" }}>
+              Minel<br />&<br />Muhammed
             </p>
          </div>
 
          {/* Sol Kanat */}
-         <div style={{
-           position: "absolute", inset: 0, zIndex: 2,
-           clipPath: "polygon(0 0, 50% 50%, 0 100%)",
-           backgroundColor: "#E6DBCA",
-           borderRadius: "6px 0 0 6px",
-         }} />
+         <div style={{ position: "absolute", inset: 0, zIndex: 2, filter: "drop-shadow(3px 0 6px rgba(0,0,0,0.15))" }}>
+           <div style={{
+             position: "absolute", inset: 0,
+             clipPath: "polygon(0 0, 52% 52%, 0 100%)",
+             borderRadius: "4px 0 0 4px",
+             ...paperStyle
+           }} />
+         </div>
          
          {/* Sağ Kanat */}
-         <div style={{
-           position: "absolute", inset: 0, zIndex: 2,
-           clipPath: "polygon(100% 0, 50% 50%, 100% 100%)",
-           backgroundColor: "#E6DBCA",
-           borderRadius: "0 6px 6px 0",
-         }} />
+         <div style={{ position: "absolute", inset: 0, zIndex: 2, filter: "drop-shadow(-3px 0 6px rgba(0,0,0,0.15))" }}>
+           <div style={{
+             position: "absolute", inset: 0,
+             clipPath: "polygon(100% 0, 48% 52%, 100% 100%)",
+             borderRadius: "0 4px 4px 0",
+             ...paperStyle
+           }} />
+         </div>
 
          {/* Alt Kanat */}
-         <div style={{
-           position: "absolute", inset: 0, zIndex: 2,
-           clipPath: "polygon(0 100%, 50% 48%, 100% 100%)",
-           backgroundColor: "#EFE6D5",
-           borderRadius: "0 0 6px 6px",
-         }} />
+         <div style={{ position: "absolute", inset: 0, zIndex: 3, filter: "drop-shadow(0 -4px 8px rgba(0,0,0,0.15))" }}>
+           <div style={{
+             position: "absolute", inset: 0,
+             clipPath: "polygon(0 100%, 50% 48%, 100% 100%)",
+             borderRadius: "0 0 4px 4px",
+             ...paperStyle
+           }} />
+           
+           {/* Zarfın Üzerindeki Yazı (Sadece açılmadan önce görünür) */}
+           <div style={{
+             position: "absolute", bottom: "10%", left: 0, right: 0,
+             textAlign: "center",
+             opacity: isOpen ? 0 : 1,
+             transition: "opacity 0.4s",
+           }}>
+             <p className="d-script" style={{ color: "var(--d-gold-dark)", fontSize: "2.5rem", lineHeight: 1, textShadow: "1px 1px 0px rgba(255,255,255,0.8)" }}>
+               Davetiye
+             </p>
+             <p className="d-sans" style={{ color: "var(--d-espresso)", fontSize: "0.75rem", letterSpacing: "0.1em", marginTop: "0.5rem" }}>
+               Açmak için mühre dokunun
+             </p>
+           </div>
+         </div>
 
          {/* Üst Kanat (Kapak) */}
-         <div style={{
+         <div style={{ 
            position: "absolute", inset: 0, zIndex: isOpen ? 0 : 4,
-           clipPath: "polygon(0 0, 50% 52%, 100% 0)",
-           backgroundColor: "#F7F0E6",
-           borderRadius: "6px 6px 0 0",
            transformOrigin: "top",
            transform: isOpen ? "rotateX(180deg)" : "rotateX(0deg)",
-           transition: "transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), z-index 0s 0.4s",
-         }} />
+           transition: "transform 1.4s cubic-bezier(0.4, 0, 0.2, 1), z-index 0s 0.6s", // Daha yavaş açılma
+           filter: isOpen ? "none" : "drop-shadow(0 4px 8px rgba(0,0,0,0.2))"
+         }}>
+           <div style={{
+             position: "absolute", inset: 0,
+             clipPath: "polygon(0 0, 50% 52%, 100% 0)",
+             borderRadius: "4px 4px 0 0",
+             ...paperStyle
+           }} />
+         </div>
 
          {/* Mühür */}
          <div style={{
@@ -283,38 +321,31 @@ function CoverScreen({ onPlayStart, onClose, data }: { onPlayStart: () => void; 
            top: "52%", left: "50%",
            transform: `translate(-50%, -50%) scale(${isOpen ? 0 : 1})`,
            opacity: isOpen ? 0 : 1,
-           transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+           transition: "all 0.6s cubic-bezier(0.4, 0, 0.2, 1)", // Daha yavaş silinme
            zIndex: 5,
-           width: "clamp(60px, 15vw, 80px)",
+           width: "clamp(70px, 20vw, 90px)",
            aspectRatio: "1",
            borderRadius: "50%",
-           background: "radial-gradient(circle at 35% 35%, #E6C27A 0%, #C9A84C 40%, #8A6D2C 80%, #5E4613 100%)",
-           boxShadow: "0 6px 16px rgba(0,0,0,0.3), inset 0 3px 8px rgba(255,255,255,0.6), inset 0 -3px 8px rgba(0,0,0,0.5)",
+           background: "radial-gradient(circle at 35% 35%, #F4D068 0%, #AA771C 40%, #5C3A00 80%, #301E00 100%)",
+           boxShadow: "0 8px 24px rgba(0,0,0,0.5), inset 0 4px 10px rgba(255,255,255,0.7), inset 0 -4px 10px rgba(0,0,0,0.8)",
            display: "flex", alignItems: "center", justifyContent: "center",
+           border: "1px solid rgba(255,255,255,0.2)"
          }}>
            <div style={{
-             width: "75%", height: "75%", borderRadius: "50%",
-             border: "1.5px solid rgba(138, 109, 44, 0.5)",
-             boxShadow: "inset 0 2px 4px rgba(0,0,0,0.3), 0 1px 2px rgba(255,255,255,0.4)",
+             width: "78%", height: "78%", borderRadius: "50%",
+             border: "2px solid rgba(138, 109, 44, 0.7)",
+             boxShadow: "inset 0 4px 8px rgba(0,0,0,0.5), 0 2px 4px rgba(255,255,255,0.5)",
              display: "flex", alignItems: "center", justifyContent: "center",
+             background: "radial-gradient(circle at 50% 50%, #AA771C 0%, #8A5A19 100%)"
            }}>
              <span className="d-script" style={{
-               color: "#5E4613", fontSize: "clamp(1.5rem, 4vw, 2.5rem)",
-               textShadow: "1px 1px 1px rgba(255,255,255,0.4), -1px -1px 1px rgba(0,0,0,0.3)",
+               color: "#F4D068", fontSize: "clamp(2rem, 5vw, 3rem)",
+               textShadow: "1px 1px 2px rgba(0,0,0,0.8), -1px -1px 2px rgba(255,255,255,0.4)",
                lineHeight: 1, transform: "translateY(-2px)"
              }}>M</span>
            </div>
          </div>
       </div>
-      
-      {!isOpen && (
-        <p className="d-sans" style={{ 
-          position: "absolute", bottom: "15%", zIndex: 2,
-          color: "var(--d-espresso)", fontSize: "0.85rem", letterSpacing: "0.15em", textTransform: "uppercase", fontWeight: 500 
-        }}>
-          Açmak için dokunun
-        </p>
-      )}
     </div>
   );
 }
