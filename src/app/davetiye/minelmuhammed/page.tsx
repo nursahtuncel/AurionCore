@@ -1013,7 +1013,7 @@ function GuestbookSection() {
   };
 
   return (
-    <section className="d-section d-reveal" style={{ maxWidth: "680px", margin: "0 auto" }}>
+    <section className="d-section d-reveal" style={{ maxWidth: "700px", margin: "0 auto" }}>
       <div style={{ textAlign: "center", marginBottom: "2rem" }}>
         <SectionLabel>Sevgi &amp; Dilekler</SectionLabel>
         <h2
@@ -1131,6 +1131,13 @@ export default function DavetiyeMinelMuhammedPage() {
   const fadeTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [data, setData] = useState<any>(null);
   const [dataLoaded, setDataLoaded] = useState(false);
+  const [ibanCopied, setIbanCopied] = useState(false);
+
+  const handleCopyIban = (iban: string) => {
+    navigator.clipboard.writeText(iban);
+    setIbanCopied(true);
+    setTimeout(() => setIbanCopied(false), 2500);
+  };
 
   // Ayarları API'den yükle
   useEffect(() => {
@@ -1291,7 +1298,7 @@ export default function DavetiyeMinelMuhammedPage() {
       {/* Main content */}
       <main
         style={{
-          maxWidth: "720px",
+          maxWidth: "700px",
           margin: "0 auto",
           padding: "0 0 6rem",
         }}
@@ -1425,7 +1432,7 @@ export default function DavetiyeMinelMuhammedPage() {
         <section
           className="d-section d-reveal"
           style={{
-            maxWidth: "540px",
+            maxWidth: "700px",
             margin: "0 auto",
             textAlign: "center",
           }}
@@ -1506,7 +1513,7 @@ export default function DavetiyeMinelMuhammedPage() {
         {/* ── Invitation Body ── */}
         <section
           className="d-section d-reveal"
-          style={{ textAlign: "center", maxWidth: "560px", margin: "0 auto" }}
+          style={{ textAlign: "center", maxWidth: "700px", margin: "0 auto" }}
         >
           <p
             className="d-serif"
@@ -1556,7 +1563,7 @@ export default function DavetiyeMinelMuhammedPage() {
 
         {/* ── IBAN ── */}
         {sec.iban && data.ibanInfo?.iban && (
-          <section className="d-section d-reveal" style={{ maxWidth: "560px", margin: "0 auto", textAlign: "center" }}>
+          <section className="d-section d-reveal" style={{ maxWidth: "700px", margin: "0 auto", textAlign: "center" }}>
             <SectionLabel>Hediye</SectionLabel>
             <h2 className="d-script" style={{ fontSize: "clamp(2rem, 8vw, 3rem)", color: "var(--d-espresso)", marginBottom: "1.5rem" }}>
               IBAN Bilgisi
@@ -1579,9 +1586,9 @@ export default function DavetiyeMinelMuhammedPage() {
                 <button
                   className="d-btn-outline"
                   style={{ flexShrink: 0, padding: "0.4rem 0.8rem", fontSize: "0.75rem" }}
-                  onClick={() => { navigator.clipboard.writeText(data.ibanInfo.iban); }}
+                  onClick={() => handleCopyIban(data.ibanInfo.iban)}
                 >
-                  Kopyala
+                  {ibanCopied ? "Kopyalandı!" : "Kopyala"}
                 </button>
               </div>
             </div>
@@ -1590,7 +1597,7 @@ export default function DavetiyeMinelMuhammedPage() {
 
         {/* ── LCV ── */}
         {sec.rsvp !== false && (
-          <section className="d-section" style={{ maxWidth: "560px", margin: "0 auto" }}>
+          <section className="d-section" style={{ maxWidth: "700px", margin: "0 auto" }}>
             <LcvSection guestName={guestName} guestHash={guestHash} data={data} />
           </section>
         )}
@@ -1621,3 +1628,4 @@ export default function DavetiyeMinelMuhammedPage() {
     </>
   );
 }
+

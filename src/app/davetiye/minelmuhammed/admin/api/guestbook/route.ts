@@ -29,3 +29,18 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ error: "Silme hatası" }, { status: 500 });
   }
 }
+
+
+export async function PUT(req: Request) {
+  try {
+    const { id, isVisible } = await req.json();
+    const { updateGuestbookVisibility } = await import("@/lib/db");
+    const updated = await updateGuestbookVisibility(id, isVisible);
+    if (!updated) {
+      return NextResponse.json({ error: "Mesaj gA?ncellenemedi" }, { status: 404 });
+    }
+    return NextResponse.json({ success: true });
+  } catch {
+    return NextResponse.json({ error: "GA?ncelleme hatasI?" }, { status: 500 });
+  }
+}

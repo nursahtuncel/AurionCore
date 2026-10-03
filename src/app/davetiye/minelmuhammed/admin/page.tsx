@@ -50,17 +50,19 @@ function AdminNavbar({ active }: { active: string }) {
           </div>
         </div>
       </nav>
-      <div className="admin-nav-links">
-        {links.map((l) => (
-          <button
-            key={l.id}
-            className={`admin-nav-link ${active === l.id ? "active" : ""}`}
-            onClick={() => router.push(l.href)}
-          >
-            {l.icon}
-            {l.label}
-          </button>
-        ))}
+      <div className="admin-nav-links-container">
+        <div className="admin-nav-links-inner">
+          {links.map((l) => (
+            <button
+              key={l.id}
+              className={`admin-nav-link ${active === l.id ? "active" : ""}`}
+              onClick={() => router.push(l.href)}
+            >
+              {l.icon}
+              {l.label}
+            </button>
+          ))}
+        </div>
       </div>
     </>
   );

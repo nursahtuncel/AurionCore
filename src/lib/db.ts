@@ -95,6 +95,7 @@ export interface GuestbookEntry {
   name: string;
   message: string;
   createdAt: string;
+  isVisible?: boolean;
 }
 
 export const PRESET_MUSIC = [
@@ -397,4 +398,15 @@ export async function getWhatsAppGuestByHash(hash: string): Promise<WhatsAppGues
   if (querySnapshot.empty) return null;
   const docSnap = querySnapshot.docs[0];
   return { id: docSnap.id, ...docSnap.data() } as WhatsAppGuest;
+}
+
+
+export async function updateGuestbookVisibility(id: string, isVisible: boolean): Promise<boolean> {
+  try {
+    const docRef = doc(firestore, "guestbook", id);
+    await updateDoc(docRef, { isVisible });
+    return true;
+  } catch (error) {
+    return false;
+  }
 }

@@ -11,7 +11,9 @@ import { addGuestbookEntry, getGuestbook } from "@/lib/db";
 export async function GET() {
   try {
     const list = await getGuestbook();
-    return NextResponse.json(list);
+    // Yalnızca isVisible !== false olanları göster
+    const visibleList = list.filter((m: any) => m.isVisible !== false);
+    return NextResponse.json(visibleList);
   } catch {
     return NextResponse.json({ error: "Veriler okunamadı" }, { status: 500 });
   }

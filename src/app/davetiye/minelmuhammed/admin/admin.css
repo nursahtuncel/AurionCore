@@ -57,18 +57,24 @@
 }
 
 /* ── Mobil menü ───────────────────────────────────────── */
-.admin-nav-links {
+.admin-nav-links-container {
+  background: var(--admin-card);
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.admin-nav-links-inner {
   display: flex;
+  justify-content: space-between;
   gap: 0.25rem;
   overflow-x: auto;
   padding: 0.5rem 1rem;
-  background: var(--admin-card);
-  border-bottom: 1px solid var(--admin-border);
+  max-width: 1000px;
+  margin: 0 auto;
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
-.admin-nav-links::-webkit-scrollbar {
+.admin-nav-links-inner::-webkit-scrollbar {
   display: none;
 }
 
