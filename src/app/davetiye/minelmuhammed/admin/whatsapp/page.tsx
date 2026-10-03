@@ -200,7 +200,18 @@ export default function WhatsAppPage() {
     if (type === "reminder") baseTemplate = reminderTemplate;
     if (type === "thankyou") baseTemplate = thankYouTemplate;
 
-    let text = baseTemplate
+    let text = baseTemplate;
+    
+    // Otomatik isim ekleme mantığı
+    if (!text.includes("{isim}") && !isGeneric) {
+      if (text.includes("Misafirimiz")) {
+        text = text.replace("Misafirimiz", guest.name);
+      } else {
+        text = `Sayın ${guest.name},\n\n` + text;
+      }
+    }
+
+    text = text
       .replace(/{isim}/g, isim)
       .replace(/{cift}/g, cift)
       .replace(/{tarih}/g, tarih)
@@ -228,8 +239,14 @@ export default function WhatsAppPage() {
     setter((prev: string) => prev + tag);
   };
 
-  const handleSend = async (guest: any, type: "invite" | "invite2" | "invite3" | "reminder" | "thankyou") => {
-    const url = getWaLink(guest, type);
+  const handleSend = async (guest: any, type: "invite" | "invite2" | "invite3" | "reminder" | "thankyou", customText?: string) => {
+    let url = "";
+    if (customText) {
+      const encoded = encodeURIComponent(customText);
+      url = guest?.phone ? `https://wa.me/${formatPhone(guest.phone)}?text=${encoded}` : `https://wa.me/?text=${encoded}`;
+    } else {
+      url = getWaLink(guest, type);
+    }
     window.open(url, "_blank");
 
     const updates: any = { id: guest.id };
@@ -275,6 +292,16 @@ export default function WhatsAppPage() {
 
   // Modal states
   const [sendModalGuest, setSendModalGuest] = useState<any>(null);
+  const [modalCustomText1, setModalCustomText1] = useState("");
+  const [modalCustomText2, setModalCustomText2] = useState("");
+  const [modalCustomText3, setModalCustomText3] = useState("");
+
+  const openSendModal = (guest: any) => {
+    setSendModalGuest(guest);
+    setModalCustomText1(decodeURIComponent(getWaLink(guest, "invite").split("text=")[1] || ""));
+    setModalCustomText2(decodeURIComponent(getWaLink(guest, "invite2").split("text=")[1] || ""));
+    setModalCustomText3(decodeURIComponent(getWaLink(guest, "invite3").split("text=")[1] || ""));
+  };
   
   const handleBulkSend = async (index: number) => {
     const guest = bulkReminderQueue[index];
@@ -458,7 +485,7 @@ export default function WhatsAppPage() {
                       {(!g.rsvpStatus || g.rsvpStatus === "none") && (
                         <>
                           {!g.sent ? (
-                            <button className="admin-btn admin-btn-sm" style={{ background: "#25D366", color: "#fff" }} onClick={() => setSendModalGuest(g)}>
+                            <button className="admin-btn admin-btn-sm" style={{ background: "#25D366", color: "#fff" }} onClick={() => openSendModal(g)}>
                               <Send size={14} /> Davet Gönder
                             </button>
                           ) : (
@@ -640,28 +667,40 @@ export default function WhatsAppPage() {
             <p className="admin-hint"><strong>{sendModalGuest.name}</strong> adlı misafire göndermek istediğiniz davet şablonunu seçin.</p>
             
             <div style={{ marginTop: "1rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
-              <div style={{ border: "1px solid #e5e7eb", borderRadius: "8px", padding: "1rem", cursor: "pointer", transition: "all 0.2s" }} onClick={() => { handleSend(sendModalGuest, "invite"); setSendModalGuest(null); }} className="template-hover">
+              <div style={{ border: "1px solid #e5e7eb", borderRadius: "8px", padding: "1rem" }}>
                 <div style={{ fontWeight: 600, marginBottom: "0.5rem", color: "#333" }}>1. Şablon (Ana Davet)</div>
-                <div style={{ fontSize: "0.85rem", color: "#666", whiteSpace: "pre-wrap", background: "#f9fafb", padding: "0.5rem", borderRadius: "4px" }}>
-                  {decodeURIComponent(getWaLink(sendModalGuest, "invite").split("text=")[1] || "")}
-                </div>
-                <button className="admin-btn admin-btn-sm" style={{ background: "#25D366", color: "#fff", width: "100%", marginTop: "0.5rem" }}>Bu Şablonla Gönder</button>
+                <textarea 
+                  className="admin-input" 
+                  rows={4} 
+                  value={modalCustomText1} 
+                  onChange={(e) => setModalCustomText1(e.target.value)} 
+                  style={{ background: "#f9fafb", padding: "0.5rem", fontSize: "0.85rem", resize: "vertical" }} 
+                />
+                <button className="admin-btn admin-btn-sm" style={{ background: "#25D366", color: "#fff", width: "100%", marginTop: "0.5rem" }} onClick={() => { handleSend(sendModalGuest, "invite", modalCustomText1); setSendModalGuest(null); }}>Bu Şablonla Gönder</button>
               </div>
 
-              <div style={{ border: "1px solid #e5e7eb", borderRadius: "8px", padding: "1rem", cursor: "pointer", transition: "all 0.2s" }} onClick={() => { handleSend(sendModalGuest, "invite2"); setSendModalGuest(null); }} className="template-hover">
+              <div style={{ border: "1px solid #e5e7eb", borderRadius: "8px", padding: "1rem" }}>
                 <div style={{ fontWeight: 600, marginBottom: "0.5rem", color: "#333" }}>2. Şablon (Samimi)</div>
-                <div style={{ fontSize: "0.85rem", color: "#666", whiteSpace: "pre-wrap", background: "#f9fafb", padding: "0.5rem", borderRadius: "4px" }}>
-                  {decodeURIComponent(getWaLink(sendModalGuest, "invite2").split("text=")[1] || "")}
-                </div>
-                <button className="admin-btn admin-btn-sm" style={{ background: "#25D366", color: "#fff", width: "100%", marginTop: "0.5rem" }}>Bu Şablonla Gönder</button>
+                <textarea 
+                  className="admin-input" 
+                  rows={4} 
+                  value={modalCustomText2} 
+                  onChange={(e) => setModalCustomText2(e.target.value)} 
+                  style={{ background: "#f9fafb", padding: "0.5rem", fontSize: "0.85rem", resize: "vertical" }} 
+                />
+                <button className="admin-btn admin-btn-sm" style={{ background: "#25D366", color: "#fff", width: "100%", marginTop: "0.5rem" }} onClick={() => { handleSend(sendModalGuest, "invite2", modalCustomText2); setSendModalGuest(null); }}>Bu Şablonla Gönder</button>
               </div>
 
-              <div style={{ border: "1px solid #e5e7eb", borderRadius: "8px", padding: "1rem", cursor: "pointer", transition: "all 0.2s" }} onClick={() => { handleSend(sendModalGuest, "invite3"); setSendModalGuest(null); }} className="template-hover">
+              <div style={{ border: "1px solid #e5e7eb", borderRadius: "8px", padding: "1rem" }}>
                 <div style={{ fontWeight: 600, marginBottom: "0.5rem", color: "#333" }}>3. Şablon (Kısa)</div>
-                <div style={{ fontSize: "0.85rem", color: "#666", whiteSpace: "pre-wrap", background: "#f9fafb", padding: "0.5rem", borderRadius: "4px" }}>
-                  {decodeURIComponent(getWaLink(sendModalGuest, "invite3").split("text=")[1] || "")}
-                </div>
-                <button className="admin-btn admin-btn-sm" style={{ background: "#25D366", color: "#fff", width: "100%", marginTop: "0.5rem" }}>Bu Şablonla Gönder</button>
+                <textarea 
+                  className="admin-input" 
+                  rows={4} 
+                  value={modalCustomText3} 
+                  onChange={(e) => setModalCustomText3(e.target.value)} 
+                  style={{ background: "#f9fafb", padding: "0.5rem", fontSize: "0.85rem", resize: "vertical" }} 
+                />
+                <button className="admin-btn admin-btn-sm" style={{ background: "#25D366", color: "#fff", width: "100%", marginTop: "0.5rem" }} onClick={() => { handleSend(sendModalGuest, "invite3", modalCustomText3); setSendModalGuest(null); }}>Bu Şablonla Gönder</button>
               </div>
             </div>
           </div>
@@ -701,3 +740,4 @@ export default function WhatsAppPage() {
     </div>
   );
 }
+

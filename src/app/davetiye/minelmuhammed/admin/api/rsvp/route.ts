@@ -11,8 +11,8 @@ export async function GET() {
   try {
     const list = await getRsvpList();
     return NextResponse.json(list);
-  } catch {
-    return NextResponse.json({ error: "Veriler okunamadı" }, { status: 500 });
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message || "Veriler okunamadı" }, { status: 500 });
   }
 }
 

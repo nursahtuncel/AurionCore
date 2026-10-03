@@ -37,7 +37,7 @@ export default function AdminRsvp() {
   useEffect(() => {
     fetch(`${base}/rsvp`)
       .then((r) => r.json())
-      .then((data) => setList(data))
+      .then((data) => setList(Array.isArray(data) ? data : []))
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);

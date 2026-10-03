@@ -50,17 +50,19 @@ function AdminNavbar({ active }: { active: string }) {
           </div>
         </div>
       </nav>
-      <div className="admin-nav-links">
-        {links.map((l) => (
-          <button
-            key={l.id}
-            className={`admin-nav-link ${active === l.id ? "active" : ""}`}
-            onClick={() => router.push(l.href)}
-          >
-            {l.icon}
-            {l.label}
-          </button>
-        ))}
+      <div className="admin-nav-links-container">
+        <div className="admin-nav-links-inner">
+          {links.map((l) => (
+            <button
+              key={l.id}
+              className={`admin-nav-link ${active === l.id ? "active" : ""}`}
+              onClick={() => router.push(l.href)}
+            >
+              {l.icon}
+              {l.label}
+            </button>
+          ))}
+        </div>
       </div>
     </>
   );
@@ -87,8 +89,11 @@ export default function AdminDashboard() {
         const rsvpData = await rsvpRes.json();
         const gbData = await gbRes.json();
 
-        const attending = rsvpData.filter((r: any) => r.attending === "yes");
-        const notAttending = rsvpData.filter((r: any) => r.attending === "no");
+        const safeRsvpData = Array.isArray(rsvpData) ? rsvpData : [];
+        const safeGbData = Array.isArray(gbData) ? gbData : [];
+
+        const attending = safeRsvpData.filter((r: any) => r.attending === "yes");
+        const notAttending = safeRsvpData.filter((r: any) => r.attending === "no");
 
         // Toplam misafir sayısı
         let totalGuests = 0;
@@ -99,12 +104,12 @@ export default function AdminDashboard() {
         });
 
         setRsvpCount({
-          total: rsvpData.length,
+          total: safeRsvpData.length,
           attending: attending.length,
           notAttending: notAttending.length,
           totalGuests,
         });
-        setGbCount(gbData.length);
+        setGbCount(safeGbData.length);
       } catch {
         // sessiz hata
       } finally {

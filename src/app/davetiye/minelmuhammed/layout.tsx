@@ -1,36 +1,6 @@
 import type { Metadata } from "next";
-import { Great_Vibes, Cormorant_Garamond, Amiri, Nunito } from "next/font/google";
 import "../../../app/globals.css";
 import "./davetiye.css";
-
-const greatVibes = Great_Vibes({
-  variable: "--font-great-vibes",
-  subsets: ["latin"],
-  weight: ["400"],
-  display: "swap",
-});
-
-const cormorant = Cormorant_Garamond({
-  variable: "--font-cormorant",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
-  display: "swap",
-});
-
-const amiri = Amiri({
-  variable: "--font-amiri",
-  subsets: ["arabic", "latin"],
-  weight: ["400", "700"],
-  display: "swap",
-});
-
-const nunito = Nunito({
-  variable: "--font-nunito",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "Minel & Muhammed | Düğün Davetiyesi",
@@ -73,10 +43,14 @@ export default function DavetiyeLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div
-      className={`davetiye-body ${greatVibes.variable} ${cormorant.variable} ${amiri.variable} ${nunito.variable}`}
-    >
-      {children}
-    </div>
+    <>
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cinzel:wght@400;500;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+      
+      <div className="davetiye-body">
+        {children}
+      </div>
+    </>
   );
 }

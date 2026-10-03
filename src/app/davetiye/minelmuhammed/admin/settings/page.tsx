@@ -21,7 +21,6 @@ const PRESET_MUSIC = [
 // Section labels
 const SECTION_LABELS: Record<string, string> = {
   countdown: "Geri Sayım",
-  gallery: "Fotoğraf Galerisi",
   program: "Program Akışı",
   venue: "Mekân ve Harita",
   iban: "IBAN / Hediye Bilgisi",
@@ -334,82 +333,6 @@ export default function AdminSettings() {
           </div>
         ))}
 
-        {/* ── Müzik ── */}
-        <div className="admin-card">
-          <h3 className="admin-card-title">
-            <Music size={16} /> Müzik Ayarları
-          </h3>
-
-          <div className="admin-toggle-row">
-            <span className="admin-toggle-label">Müzik Açık</span>
-            <button
-              className={`admin-toggle ${settings.music.enabled ? "active" : ""}`}
-              onClick={() => updateMusic("enabled", !settings.music.enabled)}
-              aria-label="Müzik aç/kapat"
-            />
-          </div>
-
-          {settings.music.enabled && (
-            <>
-              {/* Hazır listeden seç */}
-              <p style={{ fontSize: "0.8125rem", fontWeight: 600, color: "#5A3E2B", margin: "1rem 0 0.5rem" }}>
-                Hazır Parçalar
-              </p>
-              <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                {PRESET_MUSIC.map((m) => (
-                  <div
-                    key={m.id}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.5rem",
-                      padding: "0.625rem 0.75rem",
-                      borderRadius: "8px",
-                      border: `1.5px solid ${settings.music.presetId === m.id ? "#C9A84C" : "#E6D5BE"}`,
-                      background: settings.music.presetId === m.id ? "rgba(201,168,76,0.08)" : "transparent",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => {
-                      updateMusic("source", "preset");
-                      updateMusic("presetId", m.id);
-                      updateMusic("title", m.title);
-                    }}
-                  >
-                    <div style={{ flex: 1, fontSize: "0.875rem", fontWeight: settings.music.presetId === m.id ? 700 : 400 }}>
-                      {m.title}
-                    </div>
-                    <button
-                      className="admin-btn admin-btn-outline admin-btn-sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handlePreviewMusic(m.file, m.id);
-                      }}
-                    >
-                      {playingId === m.id ? "⏸" : "▶"}
-                    </button>
-                    {settings.music.presetId === m.id && (
-                      <Check size={16} color="#C9A84C" />
-                    )}
-                  </div>
-                ))}
-              </div>
-
-              {/* Ses seviyesi */}
-              <div className="admin-form-group" style={{ marginTop: "1rem" }}>
-                <label className="admin-label">Ses Seviyesi: %{Math.round(settings.music.volume * 100)}</label>
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={Math.round(settings.music.volume * 100)}
-                  onChange={(e) => updateMusic("volume", parseInt(e.target.value) / 100)}
-                  style={{ width: "100%", accentColor: "#C9A84C" }}
-                />
-              </div>
-            </>
-          )}
-        </div>
-
         {/* ── IBAN ── */}
         <div className="admin-card">
           <h3 className="admin-card-title">🏦 IBAN / Hediye Bilgisi</h3>
@@ -455,7 +378,12 @@ export default function AdminSettings() {
           </p>
 
           {Object.entries(SECTION_LABELS).map(([key, label]) => (
-            <div className="admin-toggle-row" key={key}>
+            <div 
+              className="admin-toggle-row" 
+              key={key} 
+              onClick={() => toggleSection(key)}
+              style={{ cursor: "pointer" }}
+            >
               <span className="admin-toggle-label">
                 {settings.sections[key] ? (
                   <Eye size={14} style={{ marginRight: "0.35rem", verticalAlign: "middle", color: "#16a34a" }} />
@@ -466,8 +394,12 @@ export default function AdminSettings() {
               </span>
               <button
                 className={`admin-toggle ${settings.sections[key] ? "active" : ""}`}
-                onClick={() => toggleSection(key)}
                 aria-label={`${label} göster/gizle`}
+                onClick={(e) => {
+                  // Prevent double toggling if clicked exactly on the button
+                  e.stopPropagation();
+                  toggleSection(key);
+                }}
               />
             </div>
           ))}

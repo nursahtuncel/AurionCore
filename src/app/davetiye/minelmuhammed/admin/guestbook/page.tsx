@@ -6,13 +6,14 @@
 
 import { useEffect, useState } from "react";
 import { AdminNavbar } from "../page";
-import { Trash2, Check, MessageSquare } from "lucide-react";
+import { Trash2, Check, MessageSquare, Eye, EyeOff } from "lucide-react";
 
 interface GuestbookEntry {
   id: string;
   name: string;
   message: string;
   createdAt: string;
+  isVisible?: boolean;
 }
 
 export default function AdminGuestbook() {
@@ -51,6 +52,24 @@ export default function AdminGuestbook() {
       }
     } catch {
       showToast("Silme hatası!");
+    }
+  };
+
+  // Göster/Gizle
+  const handleToggleVisibility = async (id: string, currentIsVisible: boolean = true) => {
+    const newIsVisible = !currentIsVisible;
+    try {
+      const res = await fetch(`${base}/guestbook`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, isVisible: newIsVisible }),
+      });
+      if (res.ok) {
+        setList((l) => l.map((m) => m.id === id ? { ...m, isVisible: newIsVisible } : m));
+        showToast(newIsVisible ? "Mesaj gösteriliyor ✓" : "Mesaj gizlendi ✓");
+      }
+    } catch {
+      showToast("Güncelleme hatası!");
     }
   };
 
@@ -94,29 +113,41 @@ export default function AdminGuestbook() {
           </div>
         ) : (
           <div className="admin-card" style={{ padding: 0 }}>
-            {list.map((entry) => (
-              <div key={entry.id} className="admin-msg-card">
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.35rem" }}>
-                    <span style={{ fontWeight: 700, fontSize: "0.9rem" }}>{entry.name}</span>
-                    <span style={{ fontSize: "0.7rem", color: "#5A3E2B" }}>
-                      {new Date(entry.createdAt).toLocaleDateString("tr-TR")}
-                    </span>
+            {list.map((entry) => {
+              const isVisible = entry.isVisible !== false;
+              return (
+                <div key={entry.id} className="admin-msg-card" style={{ opacity: isVisible ? 1 : 0.6 }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.35rem" }}>
+                      <span style={{ fontWeight: 700, fontSize: "0.9rem", textDecoration: isVisible ? "none" : "line-through" }}>{entry.name}</span>
+                      <span style={{ fontSize: "0.7rem", color: "#5A3E2B" }}>
+                        {new Date(entry.createdAt).toLocaleDateString("tr-TR")}
+                      </span>
+                    </div>
+                    <p style={{ fontSize: "0.875rem", color: "#2C2420", lineHeight: 1.6, fontStyle: "italic" }}>
+                      &ldquo;{entry.message}&rdquo;
+                    </p>
                   </div>
-                  <p style={{ fontSize: "0.875rem", color: "#2C2420", lineHeight: 1.6, fontStyle: "italic" }}>
-                    &ldquo;{entry.message}&rdquo;
-                  </p>
+                  <div style={{ display: "flex", gap: "0.5rem", alignSelf: "center", marginLeft: "1rem" }}>
+                    <button
+                      className="admin-btn admin-btn-outline admin-btn-sm"
+                      onClick={() => handleToggleVisibility(entry.id, isVisible)}
+                      aria-label={isVisible ? "Mesajı gizle" : "Mesajı göster"}
+                      title={isVisible ? "Sitede gizle" : "Sitede göster"}
+                    >
+                      {isVisible ? <EyeOff size={13} /> : <Eye size={13} color="#16a34a" />}
+                    </button>
+                    <button
+                      className="admin-btn admin-btn-danger admin-btn-sm"
+                      onClick={() => handleDelete(entry.id)}
+                      aria-label="Mesajı sil"
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  </div>
                 </div>
-                <button
-                  className="admin-btn admin-btn-danger admin-btn-sm"
-                  onClick={() => handleDelete(entry.id)}
-                  aria-label="Mesajı sil"
-                  style={{ flexShrink: 0, alignSelf: "center" }}
-                >
-                  <Trash2 size={13} />
-                </button>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
