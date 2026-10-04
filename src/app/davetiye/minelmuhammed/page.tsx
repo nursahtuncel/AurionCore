@@ -1682,8 +1682,26 @@ export default function DavetiyeMinelMuhammedPage() {
           <p className="d-script" style={{ fontSize: "2rem", color: "var(--d-espresso)", marginBottom: "0.5rem" }}>
             {data.brideName.split(" ")[0]} &amp; {data.groomName.split(" ")[0]}
           </p>
-          <p style={{ opacity: 0.8, marginTop: "1rem", letterSpacing: "0.05em" }}>
-            © 2026 Aurion Core Dijital Davetiyeler
+          <p style={{ opacity: 0.8, marginTop: "1rem", letterSpacing: "0.05em", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.25rem" }}>
+            © 2026 
+            <a 
+              href="https://aurioncore.com" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              style={{
+                color: "var(--d-espresso)",
+                textDecoration: "none",
+                fontWeight: 600,
+                borderBottom: "1px dotted var(--d-gold)",
+                paddingBottom: "2px",
+                transition: "color 0.2s"
+              }}
+              onMouseOver={(e) => e.currentTarget.style.color = "var(--d-gold-dark)"}
+              onMouseOut={(e) => e.currentTarget.style.color = "var(--d-espresso)"}
+            >
+              Aurion Core
+            </a>
+            Dijital Davetiyeler
           </p>
         </footer>
       </main>
