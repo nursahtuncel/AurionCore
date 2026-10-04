@@ -185,13 +185,22 @@ export default function WhatsAppPage() {
     }
   };
 
+  const getFirstName = (fullName: string) => {
+    if (!fullName) return "";
+    const parts = fullName.trim().split(" ");
+    if (parts.length > 1) {
+      return parts.slice(0, -1).join(" ");
+    }
+    return fullName;
+  };
+
   const getWaLink = (guest?: any, type: "invite" | "invite2" | "invite3" | "reminder" | "thankyou" | "generic" = "invite") => {
     const isGeneric = type === "generic" || !guest;
     const cift = "Minel & Muhammed";
     const tarih = "31 Ekim 2026";
     const saat = "13:00";
     const mekan = "Besa Albatros";
-    const isim = isGeneric ? "Değerli Büyüğümüz/Arkadaşımız" : guest.name;
+    const firstName = isGeneric ? "Değerli Büyüğümüz/Arkadaşımız" : getFirstName(guest.name);
     const link = isGeneric ? `${appUrl}${davetiyePath}` : `${appUrl}${davetiyePath}?m=${guest.hash}`;
     
     let baseTemplate = template;
@@ -204,15 +213,15 @@ export default function WhatsAppPage() {
     
     // Otomatik isim ekleme mantığı
     if (!text.includes("{isim}") && !isGeneric) {
-      if (text.includes("Misafirimiz")) {
-        text = text.replace("Misafirimiz", guest.name);
+      if (/Misafirimiz/i.test(text)) {
+        text = text.replace(/Misafirimiz/i, firstName);
       } else {
-        text = `Sayın ${guest.name},\n\n` + text;
+        text = `Sayın ${firstName},\n\n` + text;
       }
     }
 
     text = text
-      .replace(/{isim}/g, isim)
+      .replace(/{isim}/g, firstName)
       .replace(/{cift}/g, cift)
       .replace(/{tarih}/g, tarih)
       .replace(/{saat}/g, saat)
@@ -303,6 +312,45 @@ export default function WhatsAppPage() {
     setModalCustomText3(decodeURIComponent(getWaLink(guest, "invite3").split("text=")[1] || ""));
   };
   
+  const saveTemplateFromModal = async (index: 1|2|3, customText: string) => {
+    let newTemplate = customText;
+    if (sendModalGuest && sendModalGuest.name) {
+      const firstName = getFirstName(sendModalGuest.name);
+      if (firstName && newTemplate.includes(firstName)) {
+        newTemplate = newTemplate.replace(new RegExp(firstName, 'g'), '{isim}');
+      }
+    }
+    
+    const hashLink = sendModalGuest ? `${appUrl}${davetiyePath}?m=${sendModalGuest.hash}` : "";
+    if (hashLink && newTemplate.includes(hashLink)) {
+        newTemplate = newTemplate.replace(new RegExp(hashLink.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), '{link}');
+    }
+
+    try {
+      const payload = {
+        template: index === 1 ? newTemplate : template,
+        template2: index === 2 ? newTemplate : template2,
+        template3: index === 3 ? newTemplate : template3,
+        reminderTemplate,
+        thankYouTemplate,
+        personalGreeting
+      };
+
+      await fetch(`${base}/whatsapp/settings`, {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+      
+      if (index === 1) setTemplate(newTemplate);
+      if (index === 2) setTemplate2(newTemplate);
+      if (index === 3) setTemplate3(newTemplate);
+
+      alert(`${index}. Şablon başarıyla güncellendi!`);
+    } catch {
+      alert("Şablon kaydedilirken hata oluştu.");
+    }
+  };
+  
   const handleBulkSend = async (index: number) => {
     const guest = bulkReminderQueue[index];
     await handleSend(guest, "reminder");
@@ -360,13 +408,13 @@ export default function WhatsAppPage() {
     return true;
   });
 
-  const totalGuestsCount = guests.length;
-  const attendingCount = guests.filter(g => g.rsvpStatus === "yes").length;
-  const attendingPeopleCount = guests.filter(g => g.rsvpStatus === "yes").reduce((acc, g) => acc + (parseInt(g.rsvpCount) || 1), 0);
-  const notAttendingCount = guests.filter(g => g.rsvpStatus === "no").length;
-  const noResponseCount = guests.filter(g => g.rsvpStatus !== "yes" && g.rsvpStatus !== "no").length;
-
   const unmatchedRsvps = rsvpList.filter(r => !r.whatsappGuestId);
+
+  const totalGuestsCount = guests.length + unmatchedRsvps.length;
+  const attendingCount = guests.filter(g => g.rsvpStatus === "yes").length + unmatchedRsvps.filter(r => r.attending === "yes").length;
+  const attendingPeopleCount = guests.filter(g => g.rsvpStatus === "yes").reduce((acc, g) => acc + (parseInt(g.rsvpCount) || 1), 0) + unmatchedRsvps.filter(r => r.attending === "yes").reduce((acc, r) => acc + (parseInt(r.count) || 1), 0);
+  const notAttendingCount = guests.filter(g => g.rsvpStatus === "no").length + unmatchedRsvps.filter(r => r.attending === "no").length;
+  const noResponseCount = guests.filter(g => g.rsvpStatus !== "yes" && g.rsvpStatus !== "no").length;
 
   return (
     <div className="admin-body">
@@ -676,7 +724,10 @@ export default function WhatsAppPage() {
                   onChange={(e) => setModalCustomText1(e.target.value)} 
                   style={{ background: "#f9fafb", padding: "0.5rem", fontSize: "0.85rem", resize: "vertical" }} 
                 />
-                <button className="admin-btn admin-btn-sm" style={{ background: "#25D366", color: "#fff", width: "100%", marginTop: "0.5rem" }} onClick={() => { handleSend(sendModalGuest, "invite", modalCustomText1); setSendModalGuest(null); }}>Bu Şablonla Gönder</button>
+                <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.5rem" }}>
+                  <button className="admin-btn admin-btn-sm" style={{ background: "#25D366", color: "#fff", flex: 1 }} onClick={() => { handleSend(sendModalGuest, "invite", modalCustomText1); setSendModalGuest(null); }}>Bu Şablonla Gönder</button>
+                  <button className="admin-btn admin-btn-sm admin-btn-outline" style={{ flex: 1 }} onClick={() => saveTemplateFromModal(1, modalCustomText1)}><Save size={14} style={{ marginRight: "4px" }} /> Şablonu Kaydet</button>
+                </div>
               </div>
 
               <div style={{ border: "1px solid #e5e7eb", borderRadius: "8px", padding: "1rem" }}>
@@ -688,7 +739,10 @@ export default function WhatsAppPage() {
                   onChange={(e) => setModalCustomText2(e.target.value)} 
                   style={{ background: "#f9fafb", padding: "0.5rem", fontSize: "0.85rem", resize: "vertical" }} 
                 />
-                <button className="admin-btn admin-btn-sm" style={{ background: "#25D366", color: "#fff", width: "100%", marginTop: "0.5rem" }} onClick={() => { handleSend(sendModalGuest, "invite2", modalCustomText2); setSendModalGuest(null); }}>Bu Şablonla Gönder</button>
+                <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.5rem" }}>
+                  <button className="admin-btn admin-btn-sm" style={{ background: "#25D366", color: "#fff", flex: 1 }} onClick={() => { handleSend(sendModalGuest, "invite2", modalCustomText2); setSendModalGuest(null); }}>Bu Şablonla Gönder</button>
+                  <button className="admin-btn admin-btn-sm admin-btn-outline" style={{ flex: 1 }} onClick={() => saveTemplateFromModal(2, modalCustomText2)}><Save size={14} style={{ marginRight: "4px" }} /> Şablonu Kaydet</button>
+                </div>
               </div>
 
               <div style={{ border: "1px solid #e5e7eb", borderRadius: "8px", padding: "1rem" }}>
@@ -700,7 +754,10 @@ export default function WhatsAppPage() {
                   onChange={(e) => setModalCustomText3(e.target.value)} 
                   style={{ background: "#f9fafb", padding: "0.5rem", fontSize: "0.85rem", resize: "vertical" }} 
                 />
-                <button className="admin-btn admin-btn-sm" style={{ background: "#25D366", color: "#fff", width: "100%", marginTop: "0.5rem" }} onClick={() => { handleSend(sendModalGuest, "invite3", modalCustomText3); setSendModalGuest(null); }}>Bu Şablonla Gönder</button>
+                <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.5rem" }}>
+                  <button className="admin-btn admin-btn-sm" style={{ background: "#25D366", color: "#fff", flex: 1 }} onClick={() => { handleSend(sendModalGuest, "invite3", modalCustomText3); setSendModalGuest(null); }}>Bu Şablonla Gönder</button>
+                  <button className="admin-btn admin-btn-sm admin-btn-outline" style={{ flex: 1 }} onClick={() => saveTemplateFromModal(3, modalCustomText3)}><Save size={14} style={{ marginRight: "4px" }} /> Şablonu Kaydet</button>
+                </div>
               </div>
             </div>
           </div>

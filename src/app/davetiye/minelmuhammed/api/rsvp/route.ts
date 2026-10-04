@@ -31,16 +31,21 @@ export async function POST(req: Request) {
       }
     }
 
-    const entry = await addRsvp({
+    const payload: any = {
       name,
       phone: phone || "",
       attending,
       ceremony: ceremony || "",
       count: count || "1",
       children: children || "0",
-      note: note || "",
-      whatsappGuestId
-    });
+      note: note || ""
+    };
+    
+    if (whatsappGuestId) {
+      payload.whatsappGuestId = whatsappGuestId;
+    }
+
+    const entry = await addRsvp(payload);
 
     return NextResponse.json({ success: true, entry });
   } catch {

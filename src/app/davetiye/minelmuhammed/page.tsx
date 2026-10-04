@@ -704,7 +704,7 @@ function LcvSection({ guestName, guestHash, data }: { guestName?: string; guestH
     }
     setSubmitting(true);
     try {
-      await fetch("/davetiye/minelmuhammed/api/rsvp", {
+      const res = await fetch("/davetiye/minelmuhammed/api/rsvp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -718,6 +718,11 @@ function LcvSection({ guestName, guestHash, data }: { guestName?: string; guestH
           hash: guestHash,
         }),
       });
+      
+      if (!res.ok) {
+        throw new Error("Sunucu hatası: " + res.status);
+      }
+      
       setSubmitted(true);
       localStorage.setItem("lcv_minel_muhammed", JSON.stringify({ ...form, submittedAt: Date.now() }));
     } catch {
@@ -1370,7 +1375,7 @@ export default function DavetiyeMinelMuhammedPage() {
           </div>
 
           {/* Guest greeting & Name */}
-          {guestGreeting && sec.greeting !== false ? (
+          {guestGreeting && sec.greeting !== false && (
             <p
               className="d-sans d-reveal"
               style={{
@@ -1383,9 +1388,9 @@ export default function DavetiyeMinelMuhammedPage() {
             >
               {guestGreeting}
             </p>
-          ) : null}
+          )}
 
-          {guestName && sec.greeting !== false ? (
+          {guestName && sec.greeting !== false && (!data?.personalGreeting || !data.personalGreeting.includes("{isim}")) && (
             <p
               className="d-sans d-reveal"
               style={{
@@ -1397,7 +1402,7 @@ export default function DavetiyeMinelMuhammedPage() {
             >
               Sayın Misafirimiz: <strong>{guestName}</strong>
             </p>
-          ) : null}
+          )}
 
           {/* Names in elegant serif */}
           <h1
