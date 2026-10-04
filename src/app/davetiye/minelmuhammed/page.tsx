@@ -143,7 +143,7 @@ function useReveal(deps: any[] = []) {
 // Cover / Envelope Screen
 // ─────────────────────────────────────────────────────────
 
-function CoverScreen({ onPlayStart, onClose, data }: { onPlayStart: () => void; onClose: () => void; data: any }) {
+function CoverScreen({ onPlayStart, onClose, data, guestName }: { onPlayStart: () => void; onClose: () => void; data: any; guestName?: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const [fading, setFading] = useState(false);
 
@@ -291,9 +291,15 @@ function CoverScreen({ onPlayStart, onClose, data }: { onPlayStart: () => void; 
              opacity: isOpen ? 0 : 1,
              transition: "opacity 0.4s",
            }}>
-             <p className="d-script" style={{ color: "var(--d-gold-dark)", fontSize: "2.5rem", lineHeight: 1, textShadow: "1px 1px 0px rgba(255,255,255,0.8)" }}>
-               Davetiye
-             </p>
+             {guestName ? (
+               <p className="d-script" style={{ color: "var(--d-gold-dark)", fontSize: "1.8rem", lineHeight: 1.1, textShadow: "1px 1px 0px rgba(255,255,255,0.8)", padding: "0 1rem" }}>
+                 Sayın<br/>{guestName}
+               </p>
+             ) : (
+               <p className="d-script" style={{ color: "var(--d-gold-dark)", fontSize: "2.5rem", lineHeight: 1, textShadow: "1px 1px 0px rgba(255,255,255,0.8)" }}>
+                 Davetiye
+               </p>
+             )}
              <p className="d-sans" style={{ color: "var(--d-espresso)", fontSize: "0.75rem", letterSpacing: "0.1em", marginTop: "0.5rem" }}>
                Açmak için mühre dokunun
              </p>
@@ -1323,7 +1329,7 @@ export default function DavetiyeMinelMuhammedPage() {
   return (
     <>
       {/* Cover screen */}
-      {coverVisible && <CoverScreen onPlayStart={handleMusicStart} onClose={handleCoverClose} data={data} />}
+      {coverVisible && <CoverScreen onPlayStart={handleMusicStart} onClose={handleCoverClose} data={data} guestName={guestName} />}
 
       {/* Floating player — sadece müzik açıksa */}
       {data.music.enabled && (
