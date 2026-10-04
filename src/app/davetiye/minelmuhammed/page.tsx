@@ -1178,6 +1178,7 @@ export default function DavetiyeMinelMuhammedPage() {
   const [data, setData] = useState<any>(null);
   const [dataLoaded, setDataLoaded] = useState(false);
   const [ibanCopied, setIbanCopied] = useState(false);
+  const [loadingGuest, setLoadingGuest] = useState(true);
 
   const handleCopyIban = (iban: string) => {
     navigator.clipboard.writeText(iban);
@@ -1210,11 +1211,13 @@ export default function DavetiyeMinelMuhammedPage() {
             setGuestGreeting(g.greeting);
           }
         })
-        .catch(() => {});
+        .catch(() => {})
+        .finally(() => setLoadingGuest(false));
     } else {
       // Fallback to old ?misafir= param just in case
       const oldM = params.get("misafir");
       if (oldM) setGuestName(decodeURIComponent(oldM));
+      setLoadingGuest(false);
     }
   }, []);
 
@@ -1315,7 +1318,7 @@ export default function DavetiyeMinelMuhammedPage() {
   };
 
   // Yükleniyor durumu
-  if (!dataLoaded || !data) {
+  if (!dataLoaded || !data || loadingGuest) {
     return (
       <div style={{ minHeight: "100dvh", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#FAF7F2" }}>
         <p style={{ color: "#5A3E2B", fontFamily: "var(--d-font-sans)" }}>Yükleniyor...</p>
