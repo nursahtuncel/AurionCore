@@ -159,7 +159,18 @@ export default function WhatsAppPage() {
     if (!importText) return;
     const lines = importText.split("\n");
     const parsed = lines.map(line => {
-      const parts = line.includes("\t") ? line.split("\t") : line.split(",");
+      let parts = line.includes("\t") ? line.split("\t") : line.includes(",") ? line.split(",") : null;
+      
+      if (!parts) {
+        // İsim ve numara boşlukla ayrılmışsa (Örn: "Ahmet 05551234567")
+        const match = line.match(/^(.*?)\s+([+\d][\d\s\-\(\)]{6,})$/);
+        if (match) {
+          parts = [match[1], match[2]];
+        } else {
+          parts = [line];
+        }
+      }
+
       return {
         name: parts[0]?.trim(),
         phone: parts[1]?.trim() || "",
