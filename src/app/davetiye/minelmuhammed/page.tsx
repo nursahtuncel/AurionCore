@@ -1399,19 +1399,7 @@ export default function DavetiyeMinelMuhammedPage() {
             </p>
           )}
 
-          {guestName && sec.greeting !== false && (!data?.personalGreeting || !data.personalGreeting.includes("{isim}")) && (
-            <p
-              className="d-sans d-reveal"
-              style={{
-                fontSize: "0.85rem",
-                color: "#5A3E2B", // Yumuşak kahverengi
-                marginBottom: "0.75rem",
-                letterSpacing: "0.05em",
-              }}
-            >
-              Sayın Misafirimiz: <strong>{guestName}</strong>
-            </p>
-          )}
+
 
           {/* Names in elegant serif */}
           <h1
